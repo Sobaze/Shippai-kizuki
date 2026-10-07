@@ -1,0 +1,8 @@
+# Local environment settings
+.env
+.env.*
+!.env.example
+
+# Go build output
+backend/bin/
+backend/*.exe
