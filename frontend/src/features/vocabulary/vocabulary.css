@@ -1,0 +1,145 @@
+.vocabulary {
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: var(--panel-shadow);
+}
+
+.vocabulary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.vocabulary-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.vocabulary-header p,
+.vocabulary-note,
+.scoring-explanation {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.vocabulary-header p {
+  margin: 0.25rem 0 0;
+}
+
+.vocabulary-header button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #73e5ff60;
+  border-radius: 0.5rem;
+  color: var(--cyan);
+  background: var(--cyan-bg);
+  cursor: pointer;
+}
+
+.vocabulary-header button:hover:not(:disabled) {
+  background: #1c3d52;
+  border-color: var(--cyan);
+  box-shadow: 0 0 18px #73e5ff18;
+}
+
+.vocabulary-header button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.vocabulary-note {
+  margin: 1.25rem 0 0.75rem;
+}
+
+.scoring-explanation {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--purple);
+  border-radius: 0.5rem;
+  background: #c3a6ff06;
+}
+
+.scoring-explanation summary {
+  cursor: pointer;
+  color: var(--purple);
+}
+
+.vocabulary-error {
+  color: var(--pink);
+}
+
+.vocabulary-table-container {
+  overflow-x: auto;
+}
+
+.vocabulary-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.vocabulary-table caption {
+  padding: 0 0 0.75rem;
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.vocabulary-table th,
+.vocabulary-table td {
+  padding: 0.9rem 0.5rem;
+  border-bottom: 1px solid var(--row-border);
+}
+
+.vocabulary-table th {
+  color: var(--cyan);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vocabulary-table tbody tr:hover {
+  background: var(--surface-raised);
+}
+
+.vocabulary-table td[lang='ja'] {
+  font-size: 1.25rem;
+  white-space: nowrap;
+}
+
+.difficulty-score {
+  font-size: 1.25rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--pink);
+  font-variant-numeric: tabular-nums;
+}
+
+.difficulty-score span,
+.vocabulary-table small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.vocabulary-table small {
+  display: block;
+  min-width: 10rem;
+}
+
+.practice-label {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid currentColor;
+}
+
+.practice-suggested_practice { color: var(--pink); background: var(--pink-bg); }
+.practice-limited_evidence { color: var(--purple); background: var(--purple-bg); }
+.practice-no_extra_practice { color: var(--green); background: var(--green-bg); }

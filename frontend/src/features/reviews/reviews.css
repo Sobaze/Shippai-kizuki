@@ -1,0 +1,112 @@
+.reviews {
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: var(--panel-shadow);
+}
+
+.reviews-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.reviews-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.reviews-header p,
+.reviews-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.reviews-header p {
+  margin: 0.25rem 0 0;
+}
+
+.reviews-header button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #73e5ff60;
+  border-radius: 0.5rem;
+  color: var(--cyan);
+  background: var(--cyan-bg);
+  cursor: pointer;
+}
+
+.reviews-header button:hover:not(:disabled) {
+  background: #1c3d52;
+  border-color: var(--cyan);
+  box-shadow: 0 0 18px #73e5ff18;
+}
+
+.reviews-header button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.reviews-note {
+  margin: 1.25rem 0;
+}
+
+.reviews-error {
+  color: var(--pink);
+}
+
+.reviews-table-container {
+  overflow-x: auto;
+}
+
+.reviews-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.reviews-table caption {
+  padding: 0 0 0.75rem;
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.reviews-table th,
+.reviews-table td {
+  padding: 0.9rem 0.5rem;
+  border-bottom: 1px solid var(--row-border);
+}
+
+.reviews-table th {
+  color: var(--cyan);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reviews-table tbody tr:hover {
+  background: var(--surface-raised);
+}
+
+.reviews-table td[lang='ja'] {
+  font-size: 1.25rem;
+}
+
+.rating {
+  display: inline-block;
+  min-width: 4.5rem;
+  padding: 0.2rem 0.75rem;
+  border-radius: 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid currentColor;
+}
+
+.rating-again { color: var(--pink); background: var(--pink-bg); }
+.rating-hard { color: var(--amber); background: var(--amber-bg); }
+.rating-good { color: var(--green); background: var(--green-bg); }
+.rating-easy { color: var(--cyan); background: var(--cyan-bg); }
