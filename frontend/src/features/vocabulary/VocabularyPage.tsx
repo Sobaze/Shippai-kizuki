@@ -17,6 +17,7 @@ const recommendationLabels: Record<PracticeRecommendation, string> = {
 export function VocabularyPage() {
   const [state, setState] = useState<VocabularyState>({ status: 'loading' })
   const [reloadCount, setReloadCount] = useState(0)
+  const [visibleCount, setVisibleCount] = useState(50)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -57,7 +58,7 @@ export function VocabularyPage() {
       </div>
 
       <p className="vocabulary-note">
-        Demo histories, not Anki data. Higher scores mean more recorded difficulty,
+        Based on saved answer history. Higher scores mean more recorded difficulty,
         not a measurement of mastery.
       </p>
 
@@ -84,7 +85,8 @@ export function VocabularyPage() {
           <div className="vocabulary-table-container">
             <table className="vocabulary-table">
               <caption>
-                {state.words.length} words · {state.words.reduce((sum, word) => sum + word.reviewCount, 0)} reviews
+                Showing {Math.min(visibleCount, state.words.length)} of {state.words.length.toLocaleString()} words
+                {' · '}{state.words.reduce((sum, word) => sum + word.reviewCount, 0).toLocaleString()} total answers
               </caption>
               <thead>
                 <tr>
@@ -95,7 +97,7 @@ export function VocabularyPage() {
                 </tr>
               </thead>
               <tbody>
-                {state.words.map((word) => (
+                {state.words.slice(0, visibleCount).map((word) => (
                   <tr key={word.vocabulary}>
                     <td lang="ja">{word.vocabulary}</td>
                     <td className="difficulty-score">{word.difficulty}<span> / 100</span></td>
@@ -115,6 +117,9 @@ export function VocabularyPage() {
                 ))}
               </tbody>
             </table>
+            {visibleCount < state.words.length && (
+              <button type="button" className="vocabulary-more" onClick={() => setVisibleCount((count) => count + 50)}>Show more words</button>
+            )}
           </div>
         )
       )}

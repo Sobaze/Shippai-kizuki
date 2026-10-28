@@ -30,7 +30,8 @@
   margin: 0.25rem 0 0;
 }
 
-.vocabulary-header button {
+.vocabulary-header button,
+.vocabulary-more {
   padding: 0.5rem 1rem;
   border: 1px solid #73e5ff60;
   border-radius: 0.5rem;
@@ -39,7 +40,8 @@
   cursor: pointer;
 }
 
-.vocabulary-header button:hover:not(:disabled) {
+.vocabulary-header button:hover:not(:disabled),
+.vocabulary-more:hover {
   background: #1c3d52;
   border-color: var(--cyan);
   box-shadow: 0 0 18px #73e5ff18;
@@ -48,6 +50,10 @@
 .vocabulary-header button:disabled {
   opacity: 0.65;
   cursor: wait;
+}
+
+.vocabulary-more {
+  margin-top: 1rem;
 }
 
 .vocabulary-note {

@@ -1,0 +1,220 @@
+.kanji-detail {
+  width: min(56rem, calc(100% - 2rem));
+  max-width: none;
+  max-height: calc(100svh - 2rem);
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--text);
+  border: 1px solid #73e5ff50;
+  border-radius: 1rem;
+  background: #11182b;
+  box-shadow: 0 32px 100px #00000090, 0 0 48px #73e5ff12;
+}
+
+.kanji-detail::backdrop {
+  background: #030714b8;
+  backdrop-filter: blur(6px);
+}
+
+.kanji-modal-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--border);
+  background: #11182b;
+}
+
+.kanji-modal-toolbar h2 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.kanji-modal-content {
+  padding: clamp(1rem, 4vw, 2rem);
+}
+
+.kanji-study-layout {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.65fr) minmax(0, 1.35fr);
+  align-items: start;
+  gap: clamp(1rem, 4vw, 2rem);
+}
+
+.kanji-study-character {
+  text-align: center;
+}
+
+.kanji-study-glyph {
+  display: block;
+  font-size: clamp(6rem, 15vw, 9rem);
+  line-height: 1.3;
+  color: var(--cyan);
+  text-shadow: 0 0 32px #73e5ff25;
+}
+
+.kanji-detail h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--purple);
+}
+
+.kanji-meanings {
+  margin: 0.75rem 0 1rem;
+}
+
+.kanji-meanings p {
+  margin: 0 0 0.25rem;
+  font-size: 1.35rem;
+}
+
+.kanji-meanings small,
+.kanji-attribution,
+.kanji-reading-group > p,
+.kanji-notation {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.kanji-study-character .kanji-score {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.kanji-study-character .kanji-score strong {
+  font-size: 1.35rem;
+}
+
+.kanji-reading-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.kanji-reading-group,
+.kanji-name-readings {
+  min-width: 0;
+  padding: 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--bg);
+}
+
+.kanji-readings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kanji-readings li {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #73e5ff45;
+  border-radius: 0.5rem;
+  color: var(--cyan);
+  background: var(--cyan-bg);
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.kanji-name-readings summary,
+.kanji-notation summary {
+  cursor: pointer;
+  color: var(--purple);
+  font-size: 0.85rem;
+}
+
+.kanji-detail-evidence {
+  margin-top: 2rem;
+}
+
+.kanji-practice-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.kanji-practice-heading h3,
+.kanji-detail-evidence .kanji-recommendation {
+  margin: 0;
+}
+
+.kanji-practice-word {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  min-width: 7rem;
+}
+
+.kanji-word-reading {
+  padding-top: 0.85rem;
+  font-size: 1.2rem;
+}
+
+.kanji-word-reading rt {
+  color: var(--cyan);
+  font-size: 0.65rem;
+}
+
+.kanji-furigana-toggle {
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--surface-raised);
+  color: var(--cyan);
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.kanji-furigana-toggle:hover {
+  border-color: var(--cyan);
+}
+
+.kanji-attribution {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--row-border);
+}
+
+.kanji-attribution a {
+  color: var(--cyan);
+  text-underline-offset: 0.2em;
+}
+
+.kanji-attribution a:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .kanji-study-layout {
+    grid-template-columns: minmax(5rem, 0.55fr) minmax(0, 1.45fr);
+    gap: 0.75rem;
+  }
+
+  .kanji-study-glyph {
+    font-size: 5rem;
+  }
+
+  .kanji-meanings p {
+    font-size: 1.1rem;
+  }
+
+  .kanji-reading-group,
+  .kanji-name-readings {
+    padding: 0.75rem;
+  }
+}

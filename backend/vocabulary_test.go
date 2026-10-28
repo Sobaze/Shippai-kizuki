@@ -60,7 +60,7 @@ func TestVocabularyGroupingAndOrdering(t *testing.T) {
 }
 
 func TestVocabularyStatsReflectNewReviews(t *testing.T) {
-	store := reviewStore{}
+	store := reviewStore{db: testDatabase(t)}
 	response := httptest.NewRecorder()
 	store.listVocabularyStats(response, httptest.NewRequest(http.MethodGet, "/vocabulary-stats", nil))
 	if response.Code != http.StatusOK || strings.TrimSpace(response.Body.String()) != "[]" {

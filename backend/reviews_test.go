@@ -9,7 +9,7 @@ import (
 )
 
 func TestReviewRoundTrip(t *testing.T) {
-	store := reviewStore{}
+	store := reviewStore{db: testDatabase(t)}
 	list := httptest.NewRecorder()
 	store.listReviews(list, httptest.NewRequest(http.MethodGet, "/reviews", nil))
 	if list.Code != http.StatusOK || strings.TrimSpace(list.Body.String()) != "[]" {
@@ -47,7 +47,7 @@ func TestReviewRoundTrip(t *testing.T) {
 	if len(entries) != 4 {
 		t.Fatalf("got %d reviews, want 4", len(entries))
 	}
-	for i, rating := range []string{"again", "hard", "good", "easy"} {
+	for i, rating := range []string{"easy", "good", "hard", "again"} {
 		if entries[i].Vocabulary != "図書館" || entries[i].Rating != rating {
 			t.Errorf("review %d = %+v", i, entries[i])
 		}
@@ -66,19 +66,24 @@ func TestCreateReviewRejectsInvalidInput(t *testing.T) {
 		"unknown rating":     `{"vocabulary":"食べる","rating":"failed"}`,
 		"wrong field type":   `{"vocabulary":42,"rating":"hard"}`,
 		"unknown field":      `{"vocabulary":"食べる","rating":"hard","mistakeType":"reading"}`,
+		"spoofed source":     `{"vocabulary":"食べる","rating":"good","source":"anki"}`,
 		"multiple objects":   `{"vocabulary":"食べる","rating":"hard"} {}`,
 		"trailing garbage":   `{"vocabulary":"食べる","rating":"hard"} junk`,
 		"oversized body":     `{"vocabulary":"` + strings.Repeat("a", 1024*1024) + `","rating":"hard"}`,
 	}
 	for name, body := range cases {
 		t.Run(name, func(t *testing.T) {
-			store := reviewStore{}
+			store := reviewStore{db: testDatabase(t)}
 			response := httptest.NewRecorder()
 			store.createReview(response, httptest.NewRequest(http.MethodPost, "/reviews", strings.NewReader(body)))
 			if response.Code != http.StatusBadRequest {
 				t.Errorf("status = %d, want 400; body = %s", response.Code, response.Body.String())
 			}
-			if len(store.reviews) != 0 {
+			var count int
+			if err := store.db.QueryRow("SELECT COUNT(*) FROM review_events").Scan(&count); err != nil {
+				t.Fatal(err)
+			}
+			if count != 0 {
 				t.Error("invalid input was stored")
 			}
 		})

@@ -1,8 +1,12 @@
+import { useState } from 'react'
 import { ReviewsPage } from './features/reviews/ReviewsPage'
 import { VocabularyPage } from './features/vocabulary/VocabularyPage'
+import { KanjiPage } from './features/kanji/KanjiPage'
+import { AnkiConnection } from './features/anki/AnkiConnection'
 import './App.css'
 
 function App() {
+  const [dataVersion, setDataVersion] = useState(0)
   return (
     <main className="app">
       <header className="app-header">
@@ -10,10 +14,12 @@ function App() {
         <h1>Shippai Kizuki</h1>
         <p>A closer look at your Japanese learning, one review at a time.</p>
       </header>
-      <VocabularyPage />
+      <AnkiConnection onImported={() => setDataVersion((version) => version + 1)} />
+      <KanjiPage key={`kanji-${dataVersion}`} />
+      <VocabularyPage key={`vocabulary-${dataVersion}`} />
       <details className="review-history">
         <summary>View individual review history</summary>
-        <ReviewsPage />
+        <ReviewsPage key={`reviews-${dataVersion}`} />
       </details>
     </main>
   )

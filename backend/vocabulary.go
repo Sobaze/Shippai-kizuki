@@ -79,13 +79,16 @@ func calculateVocabularyStats(reviews []review) []vocabularyStats {
 }
 
 func (s *reviewStore) listVocabularyStats(w http.ResponseWriter, r *http.Request) {
-	s.mu.Lock()
-	reviews := make([]review, len(s.reviews))
-	copy(reviews, s.reviews)
-	s.mu.Unlock()
+	reviews, err := s.loadReviews(r.Context(), 0)
+	if err != nil {
+		log.Printf("load vocabulary reviews: %v", err)
+		http.Error(w, "Could not load saved vocabulary reviews.", 500)
+		return
+	}
 
 	stats := calculateVocabularyStats(reviews)
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-store")
 	if err := json.NewEncoder(w).Encode(stats); err != nil {
 		log.Printf("write vocabulary stats response: %v", err)
 	}

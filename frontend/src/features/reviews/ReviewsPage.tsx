@@ -58,8 +58,8 @@ export function ReviewsPage() {
       </div>
 
       <p className="reviews-note">
-        Anki-style ratings, entered locally for now. Anki sync will come in a later iteration.
-        Restarting the backend resets the list to the demo data.
+        Saved Anki and manually recorded answers. This list shows the latest 100;
+        difficulty scores use the complete saved history.
       </p>
 
       {state.status === 'loading' && <p role="status">Loading reviews from the backend…</p>}
@@ -70,11 +70,13 @@ export function ReviewsPage() {
         ) : (
           <div className="reviews-table-container">
             <table className="reviews-table">
-              <caption>{state.reviews.length} recorded reviews · in recorded order</caption>
+              <caption>Latest {state.reviews.length} answers · newest first</caption>
               <thead>
                 <tr>
                   <th scope="col">Vocabulary</th>
                   <th scope="col">Rating</th>
+                  <th scope="col">Source</th>
+                  <th scope="col">Reviewed</th>
                 </tr>
               </thead>
               <tbody>
@@ -86,6 +88,8 @@ export function ReviewsPage() {
                         {ratingLabels[review.rating]}
                       </span>
                     </td>
+                    <td>{review.source === 'anki' ? 'Anki' : 'Manual'}</td>
+                    <td>{review.reviewedAt ? new Date(review.reviewedAt).toLocaleString() : '—'}</td>
                   </tr>
                 ))}
               </tbody>
