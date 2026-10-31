@@ -1,4 +1,5 @@
 :root {
+  --navigation-height: 4.5rem;
   --bg: #090d1b;
   --surface: #11182bef;
   --surface-raised: #19233c;
@@ -29,6 +30,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  scroll-padding-top: calc(var(--navigation-height) + 1rem);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -55,7 +60,8 @@ button {
 }
 
 button:focus-visible,
-summary:focus-visible {
+summary:focus-visible,
+a:focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 3px;
 }

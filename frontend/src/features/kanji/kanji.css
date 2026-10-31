@@ -28,7 +28,6 @@
 }
 
 .kanji-header button,
-.kanji-more,
 .kanji-open,
 .kanji-close,
 .kanji-retry {
@@ -41,7 +40,6 @@
 }
 
 .kanji-header button:hover:not(:disabled),
-.kanji-more:hover,
 .kanji-open:hover,
 .kanji-close:hover,
 .kanji-retry:hover {
@@ -59,28 +57,13 @@
   margin-bottom: 1rem;
 }
 
-.kanji-more {
-  margin-top: 1rem;
-}
-
 .kanji-note,
-.kanji-rules,
 .kanji-context,
 .kanji-evidence-count {
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-.kanji-rules {
-  margin: 1rem 0 1.5rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-left: 2px solid var(--purple);
-  border-radius: 0.5rem;
-  background: var(--surface);
-}
-
-.kanji-rules summary,
 .kanji-evidence summary {
   cursor: pointer;
   color: var(--cyan);
@@ -88,9 +71,21 @@
 
 .kanji-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   align-items: start;
+}
+
+@media (min-width: 40rem) {
+  .kanji-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 80rem) {
+  .kanji-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .kanji-card {

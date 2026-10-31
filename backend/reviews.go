@@ -48,6 +48,9 @@ func (s *reviewStore) loadReviews(ctx context.Context, limit int) ([]review, err
 func (s *reviewStore) listReviews(w http.ResponseWriter, r *http.Request) {
 	reviews, err := s.loadReviews(r.Context(), 100)
 	if err != nil {
+		if r.Context().Err() != nil {
+			return
+		}
 		log.Printf("load reviews: %v", err)
 		http.Error(w, "Could not load saved reviews.", 500)
 		return
@@ -97,6 +100,9 @@ func (s *reviewStore) createReview(w http.ResponseWriter, r *http.Request) {
 		(vocabulary, rating, reviewed_at_ms, source, raw_json) VALUES (?, ?, ?, 'manual', '{}')`,
 		saved.Vocabulary, saved.Rating, saved.ReviewedAt)
 	if err != nil {
+		if r.Context().Err() != nil {
+			return
+		}
 		log.Printf("save manual review: %v", err)
 		http.Error(w, "Could not save the review.", 500)
 		return

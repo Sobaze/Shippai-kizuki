@@ -169,7 +169,7 @@ func TestAnkiTextAndReadings(t *testing.T) {
 			t.Errorf("got word=%q reading=%q, want %q %q", word, reading, tc.word, tc.reading)
 		}
 	}
-	mapping := kanjiMappingForReviews([]review{{Vocabulary: "時々"}, {Vocabulary: "食べる"}, {Vocabulary: "さらに"}})
+	mapping := kanjiMappingForWords([]vocabularyStats{{Vocabulary: "時々"}, {Vocabulary: "食べる"}, {Vocabulary: "さらに"}})
 	if len(mapping["時々"]) != 1 || mapping["時々"][0] != "時" || len(mapping["さらに"]) != 0 {
 		t.Fatalf("incorrect kanji extraction: %v", mapping)
 	}

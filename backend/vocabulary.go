@@ -1,12 +1,23 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"encoding/json"
 	"log"
 	"math"
 	"net/http"
 	"sort"
 )
+
+const vocabularyCountsSQL = `
+	SELECT vocabulary, COUNT(*),
+		SUM(CASE WHEN rating = 'again' THEN 1 ELSE 0 END),
+		SUM(CASE WHEN rating = 'hard' THEN 1 ELSE 0 END),
+		SUM(CASE WHEN rating = 'good' THEN 1 ELSE 0 END),
+		SUM(CASE WHEN rating = 'easy' THEN 1 ELSE 0 END)
+	FROM review_events WHERE rating IS NOT NULL
+	GROUP BY vocabulary`
 
 const (
 	againWeight             = 1.0
@@ -30,30 +41,9 @@ type vocabularyStats struct {
 	Recommendation string       `json:"recommendation"`
 }
 
-func calculateVocabularyStats(reviews []review) []vocabularyStats {
-	// A map lets every review of the same word contribute to one result.
-	byWord := make(map[string]*vocabularyStats)
-	for _, entry := range reviews {
-		stats, exists := byWord[entry.Vocabulary]
-		if !exists {
-			stats = &vocabularyStats{Vocabulary: entry.Vocabulary}
-			byWord[entry.Vocabulary] = stats
-		}
-		stats.ReviewCount++
-		switch entry.Rating {
-		case "again":
-			stats.RatingCounts.Again++
-		case "hard":
-			stats.RatingCounts.Hard++
-		case "good":
-			stats.RatingCounts.Good++
-		case "easy":
-			stats.RatingCounts.Easy++
-		}
-	}
-
-	results := make([]vocabularyStats, 0, len(byWord))
-	for _, stats := range byWord {
+func scoreVocabularyStats(results []vocabularyStats) []vocabularyStats {
+	for i := range results {
+		stats := &results[i]
 		weightedDifficulty := float64(stats.RatingCounts.Again)*againWeight + float64(stats.RatingCounts.Hard)*hardWeight
 		stats.Difficulty = int(math.Round(100 * weightedDifficulty / float64(stats.ReviewCount)))
 
@@ -65,10 +55,9 @@ func calculateVocabularyStats(reviews []review) []vocabularyStats {
 		default:
 			stats.Recommendation = "no_extra_practice"
 		}
-		results = append(results, *stats)
 	}
 
-	// Map iteration has no defined order. Sort scores, then words to break ties.
+	// Sort scores, then words to make ties deterministic.
 	sort.Slice(results, func(i, j int) bool {
 		if results[i].Difficulty == results[j].Difficulty {
 			return results[i].Vocabulary < results[j].Vocabulary
@@ -78,15 +67,44 @@ func calculateVocabularyStats(reviews []review) []vocabularyStats {
 	return results
 }
 
-func (s *reviewStore) listVocabularyStats(w http.ResponseWriter, r *http.Request) {
-	reviews, err := s.loadReviews(r.Context(), 0)
+// Consume and close the result before another query uses the connection.
+func readVocabularyCounts(rows *sql.Rows) ([]vocabularyStats, error) {
+	defer rows.Close()
+	results := []vocabularyStats{}
+	for rows.Next() {
+		var stats vocabularyStats
+		if err := rows.Scan(&stats.Vocabulary, &stats.ReviewCount, &stats.RatingCounts.Again,
+			&stats.RatingCounts.Hard, &stats.RatingCounts.Good, &stats.RatingCounts.Easy); err != nil {
+			return nil, err
+		}
+		results = append(results, stats)
+	}
+	return results, rows.Err()
+}
+
+func (s *reviewStore) loadVocabularyStats(ctx context.Context) ([]vocabularyStats, error) {
+	rows, err := s.db.QueryContext(ctx, vocabularyCountsSQL)
 	if err != nil {
+		return nil, err
+	}
+	counts, err := readVocabularyCounts(rows)
+	if err != nil {
+		return nil, err
+	}
+	return scoreVocabularyStats(counts), nil
+}
+
+func (s *reviewStore) listVocabularyStats(w http.ResponseWriter, r *http.Request) {
+	stats, err := s.loadVocabularyStats(r.Context())
+	if err != nil {
+		if r.Context().Err() != nil {
+			return
+		}
 		log.Printf("load vocabulary reviews: %v", err)
 		http.Error(w, "Could not load saved vocabulary reviews.", 500)
 		return
 	}
 
-	stats := calculateVocabularyStats(reviews)
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 	if err := json.NewEncoder(w).Encode(stats); err != nil {

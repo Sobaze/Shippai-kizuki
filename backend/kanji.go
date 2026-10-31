@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	"net/http"
@@ -101,22 +104,52 @@ func calculateKanjiStats(words []vocabularyStats, mapping map[string][]string) [
 }
 
 func (s *reviewStore) listKanjiStats(w http.ResponseWriter, r *http.Request) {
-	reviews, err := s.loadReviews(r.Context(), 0)
+	words, readings, err := s.loadKanjiVocabulary(r.Context())
 	if err != nil {
+		if r.Context().Err() != nil {
+			return
+		}
 		log.Printf("load kanji reviews: %v", err)
 		http.Error(w, "Could not load saved kanji reviews.", 500)
 		return
 	}
 
-	words := calculateVocabularyStats(reviews)
-	stats := calculateKanjiStats(words, kanjiMappingForReviews(reviews))
+	stats := calculateKanjiStats(words, kanjiMappingForWords(words))
+	for i := range stats {
+		for j := range stats[i].Evidence {
+			word := &stats[i].Evidence[j]
+			word.Reading = readings[word.Vocabulary]
+		}
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-store")
+	if err := json.NewEncoder(w).Encode(stats); err != nil {
+		log.Printf("write kanji stats response: %v", err)
+	}
+}
+
+// Keep counts and readings in one read snapshot so an import cannot change
+// the collection between these queries. No network requests run in this transaction.
+func (s *reviewStore) loadKanjiVocabulary(ctx context.Context) ([]vocabularyStats, map[string]string, error) {
+	tx, err := s.db.BeginTx(ctx, &sql.TxOptions{ReadOnly: true})
+	if err != nil {
+		return nil, nil, err
+	}
+	defer tx.Rollback()
+	rows, err := tx.QueryContext(ctx, vocabularyCountsSQL)
+	if err != nil {
+		return nil, nil, fmt.Errorf("read vocabulary counts: %w", err)
+	}
+	words, err := readVocabularyCounts(rows)
+	if err != nil {
+		return nil, nil, fmt.Errorf("decode vocabulary counts: %w", err)
+	}
 	// Conflicting readings of the same written word are not guessed or merged.
-	rows, err := s.db.QueryContext(r.Context(), `SELECT vocabulary,
+	rows, err = tx.QueryContext(ctx, `SELECT vocabulary,
 		CASE WHEN COUNT(DISTINCT NULLIF(reading, '')) = 1 THEN MAX(reading) ELSE '' END
 		FROM anki_cards GROUP BY vocabulary`)
 	if err != nil {
-		http.Error(w, "Could not load vocabulary readings.", 500)
-		return
+		return nil, nil, fmt.Errorf("read vocabulary readings: %w", err)
 	}
 	readings := make(map[string]string)
 	for rows.Next() {
@@ -131,28 +164,17 @@ func (s *reviewStore) listKanjiStats(w http.ResponseWriter, r *http.Request) {
 	}
 	rows.Close()
 	if err != nil {
-		http.Error(w, "Could not read vocabulary readings.", 500)
-		return
+		return nil, nil, fmt.Errorf("decode vocabulary readings: %w", err)
 	}
-	for i := range stats {
-		for j := range stats[i].Evidence {
-			word := &stats[i].Evidence[j]
-			word.Reading = readings[word.Vocabulary]
-		}
+	if err := tx.Commit(); err != nil {
+		return nil, nil, err
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Cache-Control", "no-store")
-	if err := json.NewEncoder(w).Encode(stats); err != nil {
-		log.Printf("write kanji stats response: %v", err)
-	}
+	return scoreVocabularyStats(words), readings, nil
 }
 
-func kanjiMappingForReviews(reviews []review) map[string][]string {
+func kanjiMappingForWords(words []vocabularyStats) map[string][]string {
 	mapping := make(map[string][]string)
-	for _, entry := range reviews {
-		if _, exists := mapping[entry.Vocabulary]; exists {
-			continue
-		}
+	for _, entry := range words {
 		characters := []string{}
 		for _, character := range entry.Vocabulary {
 			if unicode.Is(unicode.Han, character) && character != '々' {

@@ -10,7 +10,7 @@ in small iterations.
 
 ## Tech stack
 
-- **Frontend:** React + TypeScript, with Vite for development and builds
+- **Frontend:** React + TypeScript, React Router for navigation, and Vite for development/builds
 - **Backend:** Go, using the standard-library HTTP server and SQL API
 - **Database:** SQLite for imported Anki cards, answer history, manual reviews, and kanji dictionary entries
 
@@ -97,24 +97,68 @@ The frontend shows kanji insights and vocabulary difficulty scores fetched from 
 terminal running while using the frontend; press **Ctrl+C** to stop the development
 server. Run the backend in a second terminal using the instructions below.
 
-With both running, choose **Import JP Vocabulary** in the Anki panel to save your
-cards and answer history. Importing automatically refreshes the analysis panels.
-**Connect to Anki** separately lists decks from your running desktop collection.
-The rest of the page displays kanji cards with expandable evidence.
-Use **Refresh kanji** to fetch their latest scores. Below those, it displays one row per word, sorted by difficulty, with
-review counts, rating breakdowns, and a practice suggestion. Use **Refresh scores**
-to recalculate after adding reviews through the API. Expand **View individual
-review history** to inspect the original rating events; that list has its own
-Refresh button. Loading, empty-list, and request-error states are included.
-The lists initially show 24 kanji, 50 vocabulary items, and the latest 100 review
-events to keep large imports responsive. **Show more** expands kanji/vocabulary
-lists; all saved scored events contribute to difficulty calculations.
+On **Home**, choose **Import JP Vocabulary** in the Anki panel to save cards and
+answer history. **Connect to Anki** separately lists decks from your running
+desktop collection. Home also contains the scoring guide and expandable recent
+review history; the history is fetched only after first expanding it.
+
+Open **Insights** to explore **Kanji** or **Vocabulary**. Each view has a refresh
+button and practice/evidence filters. The kanji grid initially shows up to 24
+matching entries, with four columns on desktop, two on tablets, and one on phones.
+Vocabulary shows up to 50 matching rows per page. Both tabs have Previous/Next
+and numbered-page controls above and below results. Recent history shows the latest 100 events; scoring always uses
+all saved scored events.
 
 Choose **Meanings & readings →** on a kanji card to open its detail popup. Go
 looks up its meanings, on’yomi, kun’yomi, name readings (when available), and
 stroke count from SQLite when an entry is saved. Missing entries are fetched from
 kanjiapi.dev and saved for later. Only the initial lookup of an uncached kanji
 requires internet access; no API key is needed.
+
+### Navigation and filters
+
+The fixed top navigation stays visible while scrolling. **Home** holds setup,
+Anki import, and **How scoring works**. **Insights** holds Kanji/Vocabulary tabs.
+
+| URL | View |
+| --- | --- |
+| `/` | Home, import controls, scoring guide, and recent reviews |
+| `/#scoring-guide` | Home scrolled to the scoring explanation |
+| `/insights` | Redirect to Kanji insights |
+| `/insights/kanji` | Kanji cards and contributing-word evidence |
+| `/insights/vocabulary` | Vocabulary difficulty table |
+
+Both insight tabs support:
+
+- **All:** all returned items, including unscored kanji.
+- **Suggested practice:** the backend's `suggested_practice` recommendation.
+- **Limited evidence:** vocabulary with insufficient reviews, or kanji with
+  insufficient review/cross-word evidence.
+- **No extra practice suggested:** the backend's `no_extra_practice` recommendation.
+
+Counts refer to the complete fetched dataset. Filters are applied before
+pagination; a match beyond the initial 24/50 items is still accessible. Filtering
+and page changes do not make another statistics API request. High difficulty alone does not put
+an item in Suggested practice if its evidence is insufficient.
+
+The filter is saved in the URL: for example,
+`/insights/kanji?filter=practice`. Supported values are `all`, `practice`,
+`limited`, and `no-extra`; missing/unknown values show All. Switching between
+Kanji and Vocabulary retains the filter but starts the new tab on page 1. Direct links, refresh, and browser
+back/forward work through React Router. The scoring-guide link returns to Home
+and scrolls below the fixed header.
+
+Pagination uses 24 kanji or 50 vocabulary items per page, with current-page and
+result-range labels. The page is saved as `page=2`, for example
+`/insights/kanji?filter=practice&page=2`; page 1 omits that parameter. Changing a
+filter returns to page 1. Invalid values default to the first page, and pages
+beyond the filtered result count are corrected to the last available page.
+Page navigation scrolls/focuses the results heading below the fixed bar. These
+are client-side slices of the fetched summaries, so the number of rendered rows
+stays bounded while page changes remain local and quick.
+
+Vite supports these frontend paths in development. A future production frontend
+host must serve `index.html` for client-side routes as well.
 
 ### Backend
 
@@ -193,7 +237,9 @@ Invoke-RestMethod -Uri http://localhost:8080/reviews
 The server returns saved Anki answers and manually recorded reviews from SQLite.
 Each event includes `vocabulary`, `rating`, `source` (`anki` or `manual`), and
 `reviewedAt` (Unix milliseconds). The history endpoint is limited to 100 recent
-answers; both scoring endpoints load the complete scored history. Restarting Go
+answers; both scoring endpoints consider the complete scored history. SQLite
+groups rating counts before returning them to Go, rather than transferring every
+individual answer for each calculation. Restarting Go
 preserves the data. Demo histories exist only as fixtures in `backend/seed_test.go`.
 
 #### Vocabulary difficulty scores
@@ -291,8 +337,9 @@ count, and whether it is included or early evidence. Results are ordered by scor
 descending, with unscored kanji last and character order breaking ties. Empty or
 entirely kana-only review histories return `[]`.
 
-After an import, the frontend automatically reloads both scoring sections. For
-manually submitted reviews, use the individual Refresh controls or reload the page.
+After an import on Home, opening either Insights tab fetches the latest saved
+scores. For manually submitted reviews while an insight view is open, use its
+Refresh control or reload the page.
 
 These scores describe difficulty associated with a kanji's vocabulary contexts,
 not proof that the kanji caused the difficulty. Evidence thresholds are provisional
@@ -306,6 +353,18 @@ existing overview, with a dimmed, blurred backdrop. Close it with **Close ×**,
 background non-interactive while open; closing returns focus to the opener and
 preserves the overview. The popup scrolls independently of the background page.
 
+Use **Previous / Next** in the sticky popup toolbar, or the **Left / Right arrow
+keys**, to browse the current page's filtered kanji in list order. The position
+indicator shows, for example, **3 of 24 on this page**. Navigation stops at the
+first/last item without wrapping or changing result pages. Modified keyboard
+shortcuts and arrow keys in text inputs are not intercepted.
+
+The dialog remains open between entries; only its study content resets. Each new
+kanji starts at the top with furigana hidden. Neighboring dictionary entries are
+prefetched using the existing shared cache, and a late response for a previously
+viewed kanji cannot overwrite the current entry. Closing returns focus to the
+card currently being viewed.
+
 The detail view includes:
 
 - A large kanji with its meanings, stroke count, and score on the left.
@@ -317,7 +376,8 @@ The detail view includes:
 
 ##### Small reading-recall practice
 
-Vocabulary readings start hidden each time the popup opens. Try recalling a
+Vocabulary readings start hidden each time the popup opens or moves to another
+kanji. Try recalling a
 word's reading, then choose **Show furigana** to display the full-word reading
 above it using HTML ruby text. Each word can be revealed and hidden independently.
 Revealing a reading does not submit a review or change a score.
@@ -551,8 +611,10 @@ npm run build
 npm run lint
 ```
 
-- `npm test` uses Node.js 24's built-in test runner to check dictionary cache hits,
-  shared requests, preloading, independent kanji entries, and retry after errors.
+- `npm test` uses Node.js 24's built-in test runner to check dictionary caching,
+  shared requests, preloading, retry after errors, URL filter parsing, practice/
+  evidence grouping, filtered pagination, non-overlapping page slices, URL page
+  bounds, empty results, and compact page-number links.
 - `npm run build` checks TypeScript and produces a production build in `frontend/dist/`.
 - `npm run lint` checks the frontend code for potential issues.
 
@@ -582,6 +644,21 @@ repeat imports, removals, preserved manual events, transaction rollback, and
 kanji evidence from imported readings. They do not require Anki Desktop running.
 `go vet` checks Go code for common mistakes.
 
+Analytics regression tests also check that kanji scores and readings come from
+one consistent SQLite snapshot during concurrent updates. Cancelled database
+requests are treated as normal client cancellation rather than logged as server
+failures. Vocabulary SQL summaries are compared against reference fixture counts.
+
+To measure the SQLite/scoring path with a synthetic collection-sized fixture
+(39,701 answers across 1,741 vocabulary items), run inside `backend/`:
+
+```bash
+go test -run '^$' -bench '^BenchmarkVocabularyStats$' -benchmem
+```
+
+The benchmark uses a temporary database, excludes setup and HTTP encoding from
+its timed loop, and reports time and Go-allocated bytes per calculation.
+
 ## Project structure
 
 ```text
@@ -597,6 +674,9 @@ Shippai-kizuki/
 │   ├── anki_text.go    # Plain-text extraction and conservative reading parsing
 │   ├── database.go     # SQLite schema and dictionary reads/writes
 │   ├── database_test.go # Isolated SQLite storage tests
+│   ├── analytics_snapshot_test.go # Consistent analytics during concurrent writes
+│   ├── analytics_benchmark_test.go # Collection-sized analytics benchmark
+│   ├── request_context_test.go # Normal cancellation versus server errors
 │   ├── data/           # Local SQLite file; created at runtime, ignored by Git
 │   ├── dictionary.go   # Database-first dictionary lookup and response conversion
 │   ├── dictionary_test.go # Offline dictionary HTTP tests
@@ -610,7 +690,22 @@ Shippai-kizuki/
 ├── frontend/
 │   ├── public/         # Static assets
 │   ├── src/
+│   │   ├── components/
+│   │   │   ├── AppNavigation.tsx # Fixed Home/Insights navigation
+│   │   │   └── app-navigation.css
 │   │   ├── features/
+│   │   │   ├── home/
+│   │   │   │   ├── HomePage.tsx # Introduction, Anki, and recent history
+│   │   │   │   ├── ScoringGuide.tsx
+│   │   │   │   └── home.css
+│   │   │   ├── insights/
+│   │   │   │   ├── InsightsLayout.tsx # Kanji/Vocabulary route tabs
+│   │   │   │   ├── PracticeFilters.tsx # Shared filter controls and counts
+│   │   │   │   ├── practiceFilter.ts # Filter parsing and matching
+│   │   │   │   ├── Pagination.tsx # Shared numbered-page navigation
+│   │   │   │   ├── pageWindow.ts # Page bounds and compact link numbers
+│   │   │   │   ├── useInsightPagination.ts # URL state and result focus/scroll
+│   │   │   │   └── insights.css
 │   │   │   ├── anki/
 │   │   │   │   ├── AnkiConnection.tsx # Connection status and deck names
 │   │   │   │   ├── VocabularyImport.tsx # Import action and saved summary
@@ -618,8 +713,10 @@ Shippai-kizuki/
 │   │   │   │   ├── types.ts
 │   │   │   │   └── anki.css
 │   │   │   ├── kanji/
-│   │   │   │   ├── KanjiPage.tsx # Kanji cards and expandable word evidence
-│   │   │   │   ├── KanjiDetail.tsx # Meanings, readings, and personal evidence
+│   │   │   │   ├── KanjiPage.tsx # API data, filters, and pagination
+│   │   │   │   ├── KanjiGrid.tsx # Results-page selection, cards, and popup
+│   │   │   │   ├── KanjiDetail.tsx # Persistent dialog and previous/next controls
+│   │   │   │   ├── KanjiStudyContent.tsx # Per-kanji lookup and reading practice
 │   │   │   │   ├── KanjiEvidenceTable.tsx # Evidence UI shared by cards/details
 │   │   │   │   ├── labels.ts     # Shared recommendation labels
 │   │   │   │   ├── kanji-detail.css
@@ -642,6 +739,8 @@ Shippai-kizuki/
 │   │   └── main.tsx               # React entry point
 │   ├── vite.config.ts  # Development server and API proxy
 │   ├── tests/kanji-api.test.ts # Browser dictionary-cache logic tests (Node)
+│   ├── tests/practice-filters.test.ts # Filter semantics and pagination ordering
+│   ├── tests/pagination.test.ts # Page ranges, invalid URLs, and numbered links
 │   ├── package.json    # Frontend dependencies and npm commands
 │   └── package-lock.json
 ├── .gitignore
@@ -716,8 +815,8 @@ checks the current active collection.
 1. Sync your phone, then sync Anki Desktop with the same AnkiWeb account.
 2. Keep the intended Anki Desktop profile open.
 3. Choose **Import JP Vocabulary**. It works independently of the deck-list button.
-4. After success, the summary and scoring panels refresh automatically. Saved
-   analysis remains available when Anki is closed or Go is restarted.
+4. After success, the saved summary updates. Open **Insights** to load the latest
+   scores. Saved analysis remains available when Anki is closed or Go is restarted.
 
 The import is deliberately limited to `JP Vocabulary` and its subdecks, from one
 active desktop profile. It calls only read operations: `deckNames`, `findCards`,

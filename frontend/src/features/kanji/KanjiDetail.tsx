@@ -1,43 +1,22 @@
-import { useEffect, useRef, useState } from 'react'
-import { getCachedKanjiDetails, getKanjiDetails } from './api'
-import { KanjiEvidenceTable } from './KanjiEvidenceTable'
-import { recommendationLabels } from './labels'
-import type { KanjiDetails, KanjiStats } from './types'
+import { useEffect, useRef } from 'react'
+import { KanjiStudyContent } from './KanjiStudyContent'
+import type { KanjiStats } from './types'
 import './kanji-detail.css'
 
 type KanjiDetailProps = {
   entry: KanjiStats
+  position: number
+  total: number
+  onPrevious: () => void
+  onNext: () => void
   onClose: () => void
 }
 
-type DictionaryState =
-  | { status: 'loading' }
-  | { status: 'success'; details: KanjiDetails }
-  | { status: 'error'; message: string }
-
-function ReadingGroup({ title, readings }: { title: string; readings: string[] }) {
-  return (
-    <section className="kanji-reading-group">
-      <h3>{title}</h3>
-      {readings.length === 0 ? (
-        <p>No readings listed.</p>
-      ) : (
-        <ul className="kanji-readings" lang="ja">
-          {readings.map((reading) => <li key={reading}>{reading}</li>)}
-        </ul>
-      )}
-    </section>
-  )
-}
-
-export function KanjiDetail({ entry, onClose }: KanjiDetailProps) {
-  const [state, setState] = useState<DictionaryState>(() => {
-    const cached = getCachedKanjiDetails(entry.kanji)
-    return cached ? { status: 'success', details: cached } : { status: 'loading' }
-  })
-  const [retryCount, setRetryCount] = useState(0)
+export function KanjiDetail({ entry, position, total, onPrevious, onNext, onClose }: KanjiDetailProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const hasPrevious = position > 1
+  const hasNext = position < total
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -55,30 +34,16 @@ export function KanjiDetail({ entry, onClose }: KanjiDetailProps) {
   }, [])
 
   useEffect(() => {
-    let active = true
+    const dialog = dialogRef.current
+    if (!dialog) return
+    dialog.scrollTo(0, 0)
 
-    getKanjiDetails(entry.kanji)
-      .then((details) => {
-        if (active) {
-          setState({ status: 'success', details })
-        }
-      })
-      .catch((error: unknown) => {
-        if (active) {
-          setState({
-            status: 'error',
-            message: error instanceof Error ? error.message : 'Could not load the dictionary entry.',
-          })
-        }
-      })
-
-    return () => { active = false }
-  }, [entry.kanji, retryCount])
-
-  function retryLookup() {
-    setState({ status: 'loading' })
-    setRetryCount((count) => count + 1)
-  }
+    // Keep keyboard navigation available if the focused arrow became disabled.
+    const active = document.activeElement
+    if (!dialog.contains(active) || (active instanceof HTMLButtonElement && active.disabled)) {
+      headingRef.current?.focus({ preventScroll: true })
+    }
+  }, [entry.kanji])
 
   return (
     <dialog
@@ -89,6 +54,18 @@ export function KanjiDetail({ entry, onClose }: KanjiDetailProps) {
         event.preventDefault()
         onClose()
       }}
+      onKeyDown={(event) => {
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+        const target = event.target
+        if (target instanceof HTMLElement && (target.isContentEditable || target.closest('input, textarea, select'))) return
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault()
+          if (hasPrevious) onPrevious()
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault()
+          if (hasNext) onNext()
+        }
+      }}
       onClick={(event) => {
         if (event.target !== event.currentTarget) return
         const bounds = event.currentTarget.getBoundingClientRect()
@@ -98,79 +75,24 @@ export function KanjiDetail({ entry, onClose }: KanjiDetailProps) {
       }}
     >
       <header className="kanji-modal-toolbar">
-        <h2 id="kanji-detail-heading" ref={headingRef} tabIndex={-1}>Study <span lang="ja">{entry.kanji}</span></h2>
-        <button type="button" className="kanji-close" onClick={onClose} aria-label="Close kanji details">Close ×</button>
-      </header>
-
-      <div className="kanji-modal-content">
-        <div className="kanji-study-layout">
-          <div className="kanji-study-character">
-            <span className="kanji-study-glyph" lang="ja">{entry.kanji}</span>
-            {state.status === 'success' && (
-              <div className="kanji-meanings">
-                <h3>Meaning</h3>
-                <p>{state.details.meanings.length > 0 ? state.details.meanings.join('; ') : 'No English meanings listed.'}</p>
-                <small>{state.details.strokeCount} strokes</small>
-              </div>
-            )}
-            <div className="kanji-score">
-              {entry.difficulty === null ? (
-                <strong className="kanji-unscored">Not scored yet</strong>
-              ) : (
-                <strong>{entry.difficulty}<small> / 100</small></strong>
-              )}
-              <span>Your recorded difficulty</span>
-            </div>
-          </div>
-
-          <div className="kanji-reading-stack">
-            {state.status === 'loading' && <p role="status">Looking up meanings and readings…</p>}
-            {state.status === 'error' && (
-              <div>
-                <p className="kanji-error" role="alert">{state.message}</p>
-                <button type="button" className="kanji-retry" onClick={retryLookup}>Retry dictionary lookup</button>
-              </div>
-            )}
-            {state.status === 'success' && (
-              <>
-                <ReadingGroup title="On’yomi · 音読み" readings={state.details.onReadings} />
-                <ReadingGroup title="Kun’yomi · 訓読み" readings={state.details.kunReadings} />
-                {state.details.nameReadings.length > 0 && (
-                  <details className="kanji-name-readings">
-                    <summary>Name readings · 名乗り</summary>
-                    <ul className="kanji-readings" lang="ja">
-                      {state.details.nameReadings.map((reading) => <li key={reading}>{reading}</li>)}
-                    </ul>
-                  </details>
-                )}
-                <details className="kanji-notation">
-                  <summary>Reading notation help</summary>
-                  <p>A dot marks where the kana ending (okurigana) begins, such as か.く for 書く. A hyphen indicates a prefix or suffix form.</p>
-                  <p>These are dictionary-listed readings. A word’s actual reading depends on that word.</p>
-                </details>
-              </>
-            )}
-          </div>
+        <div className="kanji-modal-title">
+          <h2 id="kanji-detail-heading" ref={headingRef} tabIndex={-1}>Study <span lang="ja">{entry.kanji}</span></h2>
+          <p className="kanji-detail-position" role="status">{position} of {total} on this page</p>
         </div>
-
-        <section className="kanji-evidence kanji-detail-evidence" aria-labelledby="kanji-detail-evidence-heading">
-          <div className="kanji-practice-heading">
-            <h3 id="kanji-detail-evidence-heading">Practice with your vocabulary</h3>
-            <span className={`kanji-recommendation kanji-${entry.recommendation}`}>
-              {recommendationLabels[entry.recommendation]}
-            </span>
+        <div className="kanji-modal-actions">
+          <div className="kanji-detail-navigation" role="group" aria-label="Browse kanji on this page">
+            <button type="button" className="kanji-detail-arrow" onClick={onPrevious} disabled={!hasPrevious} aria-label="Previous kanji" aria-keyshortcuts="ArrowLeft" title="Previous kanji (Left arrow)">
+              ← <span className="kanji-direction-label">Previous</span>
+            </button>
+            <button type="button" className="kanji-detail-arrow" onClick={onNext} disabled={!hasNext} aria-label="Next kanji" aria-keyshortcuts="ArrowRight" title="Next kanji (Right arrow)">
+              <span className="kanji-direction-label">Next</span> →
+            </button>
           </div>
-          <p className="kanji-context">Try recalling each word’s reading, then reveal its furigana. Readings come from imported card fields; uncertain readings are left unavailable.</p>
-          <p className="kanji-context">{entry.qualifiedWordCount} of {entry.wordCount} vocabulary items qualify for scoring.</p>
-          <KanjiEvidenceTable kanji={entry.kanji} evidence={entry.evidence} practiceReadings />
-        </section>
-
-        <footer className="kanji-attribution">
-          Kanji dictionary data: <a href="https://www.edrdg.org/wiki/KANJIDIC_Project.html" target="_blank" rel="noreferrer">KANJIDIC2 / EDRDG</a>
-          {' '}(<a href="https://www.edrdg.org/edrdg/licence.html" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>),
-          {' '}via <a href={`https://kanjiapi.dev/v1/kanji/${encodeURIComponent(entry.kanji)}`} target="_blank" rel="noreferrer">kanjiapi.dev</a>.
-        </footer>
-      </div>
+          <button type="button" className="kanji-close" onClick={onClose} aria-label="Close kanji details">Close ×</button>
+        </div>
+      </header>
+      {/* Keep the dialog open while resetting lookup and practice state per kanji. */}
+      <KanjiStudyContent key={entry.kanji} entry={entry} />
     </dialog>
   )
 }

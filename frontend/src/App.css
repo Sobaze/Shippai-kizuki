@@ -1,8 +1,10 @@
 .app {
-  width: min(100% - 2rem, 64rem);
+  width: min(100% - 2rem, 96rem);
   margin: 0 auto;
-  padding: clamp(2rem, 5vw, 4rem) 0;
+  padding: calc(var(--navigation-height) + clamp(1.5rem, 4vw, 3rem)) 0 3rem;
 }
+
+.app:focus { outline: none; }
 
 .app-header {
   margin-bottom: 2rem;
@@ -36,7 +38,7 @@ h1 {
   text-shadow: 0 0 32px #73e5ff25;
 }
 
-.app-header > p:last-child {
+.app-header > p:not(.eyebrow) {
   color: var(--muted);
 }
 

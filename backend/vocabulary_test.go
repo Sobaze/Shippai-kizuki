@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -87,4 +88,64 @@ func TestVocabularyStatsReflectNewReviews(t *testing.T) {
 	if len(got) != 1 || got[0].Difficulty != 50 || got[0].ReviewCount != 3 || got[0].Recommendation != "suggested_practice" {
 		t.Fatalf("unexpected stats after POST: %+v", got)
 	}
+}
+
+func TestVocabularySQLMatchesReferenceCounts(t *testing.T) {
+	db := testDatabase(t)
+	reviews := append(demoReviews(),
+		review{Vocabulary: `引用 ' quoted`, Rating: "again"},
+		review{Vocabulary: `引用 ' quoted`, Rating: "easy"},
+	)
+	for i, entry := range reviews {
+		source := "manual"
+		if i%2 == 0 {
+			source = "anki"
+		}
+		if _, err := db.Exec(`INSERT INTO review_events
+			(vocabulary, rating, reviewed_at_ms, source, raw_json) VALUES (?, ?, ?, ?, '{}')`,
+			entry.Vocabulary, entry.Rating, i+1, source); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := db.Exec(`INSERT INTO review_events
+		(vocabulary, rating, reviewed_at_ms, source, raw_json) VALUES ('unscored', NULL, 100, 'anki', '{}')`); err != nil {
+		t.Fatal(err)
+	}
+	store := reviewStore{db: db}
+	got, err := store.loadVocabularyStats(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := calculateVocabularyStats(reviews); !reflect.DeepEqual(got, want) {
+		t.Fatalf("SQL summaries changed the scores: got %+v, want %+v", got, want)
+	}
+}
+
+// Reference grouping for small test fixtures. Production obtains these counts
+// directly from SQLite; scoring and ranking have one implementation.
+func calculateVocabularyStats(reviews []review) []vocabularyStats {
+	byWord := make(map[string]*vocabularyStats)
+	for _, entry := range reviews {
+		stats, exists := byWord[entry.Vocabulary]
+		if !exists {
+			stats = &vocabularyStats{Vocabulary: entry.Vocabulary}
+			byWord[entry.Vocabulary] = stats
+		}
+		stats.ReviewCount++
+		switch entry.Rating {
+		case "again":
+			stats.RatingCounts.Again++
+		case "hard":
+			stats.RatingCounts.Hard++
+		case "good":
+			stats.RatingCounts.Good++
+		case "easy":
+			stats.RatingCounts.Easy++
+		}
+	}
+	results := make([]vocabularyStats, 0, len(byWord))
+	for _, stats := range byWord {
+		results = append(results, *stats)
+	}
+	return scoreVocabularyStats(results)
 }

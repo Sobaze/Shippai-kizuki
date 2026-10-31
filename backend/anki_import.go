@@ -235,6 +235,9 @@ func (i *ankiImporter) importStatus(w http.ResponseWriter, r *http.Request) {
 		(SELECT COUNT(*) FROM review_events WHERE source = 'anki' AND rating IS NULL)
 		FROM anki_cards`).Scan(&summary.CardCount, &importedAt, &summary.MissingReadingCount, &summary.ReviewCount, &summary.UnscoredReviewCount)
 	if err != nil {
+		if r.Context().Err() != nil {
+			return
+		}
 		log.Printf("read import status: %v", err)
 		http.Error(w, "Could not read the saved import status.", 500)
 		return

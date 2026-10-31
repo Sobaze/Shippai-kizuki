@@ -20,8 +20,7 @@
 }
 
 .vocabulary-header p,
-.vocabulary-note,
-.scoring-explanation {
+.vocabulary-note {
   color: var(--muted);
   font-size: 0.9rem;
 }
@@ -30,8 +29,7 @@
   margin: 0.25rem 0 0;
 }
 
-.vocabulary-header button,
-.vocabulary-more {
+.vocabulary-header button {
   padding: 0.5rem 1rem;
   border: 1px solid #73e5ff60;
   border-radius: 0.5rem;
@@ -40,8 +38,7 @@
   cursor: pointer;
 }
 
-.vocabulary-header button:hover:not(:disabled),
-.vocabulary-more:hover {
+.vocabulary-header button:hover:not(:disabled) {
   background: #1c3d52;
   border-color: var(--cyan);
   box-shadow: 0 0 18px #73e5ff18;
@@ -52,26 +49,8 @@
   cursor: wait;
 }
 
-.vocabulary-more {
-  margin-top: 1rem;
-}
-
 .vocabulary-note {
   margin: 1.25rem 0 0.75rem;
-}
-
-.scoring-explanation {
-  margin-bottom: 1.5rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-left: 2px solid var(--purple);
-  border-radius: 0.5rem;
-  background: #c3a6ff06;
-}
-
-.scoring-explanation summary {
-  cursor: pointer;
-  color: var(--purple);
 }
 
 .vocabulary-error {

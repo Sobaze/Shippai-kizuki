@@ -48,6 +48,9 @@ func (d *kanjiDictionary) lookup(w http.ResponseWriter, r *http.Request) {
 
 	details, found, err := getStoredKanji(r.Context(), d.db, character)
 	if err != nil {
+		if r.Context().Err() != nil {
+			return
+		}
 		log.Printf("dictionary database lookup: %v", err)
 		http.Error(w, "could not read the local dictionary database; please try again", http.StatusInternalServerError)
 		return
@@ -118,6 +121,9 @@ func (d *kanjiDictionary) lookup(w http.ResponseWriter, r *http.Request) {
 		NameReadings: entry.NameReadings, StrokeCount: entry.StrokeCount,
 	}
 	if err := saveKanji(r.Context(), d.db, details, request.URL.String()); err != nil {
+		if r.Context().Err() != nil {
+			return
+		}
 		log.Printf("dictionary database save: %v", err)
 		http.Error(w, "could not save the dictionary entry locally; please try again", http.StatusInternalServerError)
 		return
