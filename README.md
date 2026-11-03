@@ -12,7 +12,7 @@ in small iterations.
 
 - **Frontend:** React + TypeScript, React Router for navigation, and Vite for development/builds
 - **Backend:** Go, using the standard-library HTTP server and SQL API
-- **Database:** SQLite for imported Anki cards, answer history, manual reviews, and kanji dictionary entries
+- **Database:** SQLite for imported Anki cards, answer history, manual reviews, quiz attempts, and kanji dictionary entries
 
 ## Installation and setup
 
@@ -119,6 +119,8 @@ requires internet access; no API key is needed.
 
 The fixed top navigation stays visible while scrolling. **Home** holds setup,
 Anki import, and **How scoring works**. **Insights** holds Kanji/Vocabulary tabs.
+**Quiz** opens short, self-contained kanji meaning practice. On phones, the fixed
+navigation uses two rows so all three destinations remain readable.
 
 | URL | View |
 | --- | --- |
@@ -127,6 +129,7 @@ Anki import, and **How scoring works**. **Insights** holds Kanji/Vocabulary tabs
 | `/insights` | Redirect to Kanji insights |
 | `/insights/kanji` | Kanji cards and contributing-word evidence |
 | `/insights/vocabulary` | Vocabulary difficulty table |
+| `/quiz` | Ten-question kanji-meaning or whole-word-reading practice |
 
 Both insight tabs support:
 
@@ -160,6 +163,192 @@ stays bounded while page changes remain local and quick.
 Vite supports these frontend paths in development. A future production frontend
 host must serve `index.html` for client-side routes as well.
 
+### Quiz practice
+
+Open **Quiz** and choose a practice type. Regular quizzes use **Start 10-question
+quiz**; the sentence exercise uses **Start Exercise 4**.
+
+**N2 is selected by default in the meaning and reading modes** for exam-focused practice.
+
+| Estimated level | Kanji meanings | Word readings |
+| --- | ---: | ---: |
+| **N2** | **374 kanji** | **1,640 words** |
+| N4 | 24 kanji | 24 words |
+| N5 | 24 kanji | 24 words |
+
+Meaning quizzes offer four English choices; reading quizzes offer four kana
+choices for complete written words. Each regular quiz draws ten distinct items from
+the selected pool. Pools are level-specific, not cumulative. N2 meanings cover
+the full **374 N2-specific kanji** in the chosen source list, rather than the
+roughly 1,000 cumulative prerequisite kanji expected for the exam. N2 readings
+are independently classified vocabulary with exact dictionary matches.
+The same kanji can occur in different words; those contexts are intentional.
+See [docs/n2-practice.md](docs/n2-practice.md) for scope, sources, first-pass pace,
+data validation, and rebuilding the bundled N2 data.
+
+Each mode remembers its selected level while the Quiz page is open. Reading
+levels classify **vocabulary**, independently of the component kanji's level.
+
+Both modes are untimed. Question order and option positions are shuffled once
+at the start and stay stable while answering. Select one option, then choose
+**Next question**; the last button is **Finish quiz**. Word prompts have no
+furigana, and answer feedback is withheld until the results.
+**Cancel quiz** returns to the start screen and discards the unfinished attempt
+without producing a score, while keeping the selected practice type and level. A new
+attempt starts with zero answers.
+
+#### JLPT Kanji exercise — Exercise 4
+
+Choose **JLPT Kanji exercise** to open **Exercise 4**: twelve sentence-based
+questions, six asking for a reading and six for the correct kanji spelling.
+The sentence target is highlighted and underlined. Questions retain their
+original order; choices are shuffled. Results show the total score, separate
+reading/spelling scores, and sentence/word feedback. **Restart Exercise 4** repeats
+the whole fixed set; retrying misses can include all twelve questions.
+
+Exercise coverage, history, and mistake progress are separate from standalone
+meaning/reading practice. Saved target/task IDs keep reading and spelling
+progress independent. Source: the JapaneseTest4You exercise text and key supplied
+by the user, published March 14, 2015; it is labelled JLPT-inspired practice.
+See [docs/jlpt-kanji-exercises.md](docs/jlpt-kanji-exercises.md) for the exercise,
+storage upgrade, and how to supply additional sets in a document or paste.
+
+#### Coverage and balanced question selection
+
+The setup screen shows coverage for the selected mode and level, for example
+**10 / 24 attempted · 14 not yet attempted**, with a progress bar and a
+**Refresh coverage** button. Coverage counts distinct current-pool items that
+appear in saved completed attempts, regardless of correctness. Full quizzes and
+focused retries both count. Viewing results/history, cancelling, and unsaved runs
+do not add coverage. This is exposure to the pool, not a mastery or accuracy score.
+
+Regular ten-question quizzes now select in this order:
+
+1. Unseen items first (zero saved attempts).
+2. Then items with fewer saved attempts.
+3. For equal attempt counts, least recently practised first.
+4. Random choice among exact ties, then shuffled question order and choices.
+
+In a fresh 24-item pool, three completed and saved full quizzes cover all 24
+items. A question appears at most once per quiz. Once the pool is covered, the
+same rules balance further practice rather than stopping it. Focused retries
+retain their existing missed-item/queue selection rules.
+
+Counts are derived from **all saved attempts**, not only the latest twenty in
+history, matching stable question IDs to the current pool. Earlier snapshots
+without level metadata contribute when their IDs still belong to the selected
+pool. Retired IDs and other modes/levels do not inflate the current pool's total.
+The next regular quiz checks fresh coverage and waits for pending saves before
+selecting; a missing or failed coverage request is shown as an error rather than
+silently falling back to random questions. Returning to setup reloads coverage.
+
+The result screen shows the correct count, percentage, and every prompt with your
+answer and the correct meaning or reading. Meaning questions also show a checked
+example word, its kana reading, and its English meaning. Reading questions show
+the complete word, correct kana, and word meaning. Whole-word readings are not
+automatically split or labelled per kanji.
+
+The **Start another 10-question … quiz** button creates a fresh attempt in the same mode
+and selected level (shown on the button);
+**Change quiz type** returns to setup. Native radio controls support keyboard selection, with focus
+moving to each new question and the final results heading.
+
+Question pools are stored in `backend/quiz_data.json`, the larger
+`backend/quiz_n2.generated.json`, and `backend/quiz_exercises.json`, embedded in the Go binary,
+and loaded through `GET /quiz/questions?mode=meaning&level=N5` (or `N4`, with
+`mode=reading` for word-reading pools). Go validates the checked data at startup. No live
+dictionary or Anki calls are needed to start or answer a quiz. Restart Go after
+editing the JSON, since embedded data is compiled into the executable. The setup
+screen shows loading/errors and lets you retry; starting is disabled until the
+selected pool is ready. An unfinished run is held in memory; a refresh starts it
+over. Completed attempts
+auto-save to SQLite and survive browser refreshes and backend restarts.
+Quiz results are separate from imported review events and do not alter difficulty
+scores.
+
+#### Saved attempts and focused retries
+
+Restart the Go backend after this update so it creates or upgrades the `quiz_attempts`
+table and registers the current routes. The exercise upgrade preserves old quiz
+rows and snapshots in one transaction while allowing sentence mode and twelve
+answers. Complete a quiz and check the status above its
+results: **Saved** confirms that it is available in history. If saving fails,
+the result remains usable and **Retry saving** sends the same attempt ID and
+snapshot. Starting another quiz does not abort a completed-attempt save.
+
+Choose **Change quiz type** to return to setup. **Recent meaning attempts** and
+**Recent word-reading attempts** show the latest twenty completed attempts for
+the selected mode, with completion time, score, and Full quiz/Focused retry
+labels. **Review** loads the original saved questions, choices, selected answers,
+and word feedback; it does not re-save or regrade against a changed question pool.
+Use **Refresh history** to reload the latest list.
+
+If a result contains mistakes, **Retry N missed questions** starts a separate
+attempt using only those question snapshots. Their order and options are shuffled
+again. The retry can have 1–10 questions (1–12 for sentence exercises), with its own progress and score. For
+example, an original **7/10** remains 7/10 after a successful **3/3** retry.
+A perfect result has no missed-item retry button. Cancelled retries are not saved.
+
+Go validates full-quiz completion (ten answers, or the exercise's full twelve), valid shorter retries, consistent
+modes, distinct choices, and selected answers. It calculates correctness from the
+submitted snapshots instead of accepting a client-provided score. A single atomic
+INSERT stores the completed result. Repeating the same ID/content returns the
+existing row; attempting to change a saved ID returns `409`.
+
+The setup view also shows a **practice queue** for the selected mode, derived
+from all saved attempts. A wrong answer adds an item at **0/2** or resets its
+streak. Two consecutive correct answers in separate saved attempts clear it for
+now; a later mistake brings it back. Full quizzes and retries both contribute.
+Unasked items, cancelled runs, unsaved results, and history review do not change
+progress. Back-to-back attempts are allowed; clearing is not permanent mastery.
+
+The queue's practice button starts up to ten least-recently-practised questions,
+with shuffled order and choices. Queue runs use the existing focused retry
+format, retain saved question snapshots, and show their own save status. Each
+mode's queue initially focuses on **the selected level**; use **Include other
+levels and older saved items** to show the entire mode queue. Matching legacy
+IDs count in the selected level. Long lists expand 24 items at a time.
+New candidates show their estimated level. History remains grouped by mode.
+New meaning and reading snapshots retain their level, including through retries and saved
+review. Older snapshots without level metadata stay reviewable and are labelled
+generically rather than being assigned a level retroactively.
+Queues load after pending saves finish and can be refreshed. Restart the Go
+backend to load the current routes and embedded question pools.
+
+Six starter reading targets now appear in classified pools with the same IDs:
+新しい, 新聞, 勉強, 近い, 朝ご飯 (N5) and 最近 (N4). The other six starter targets
+are not assigned an unsupported level; their saved snapshots remain reviewable,
+retryable, and usable in queue sessions. Existing attempts are never rewritten.
+
+Active attempts still clear when leaving the Quiz view, but saved attempts can
+be reviewed later. Delayed practice can build on this history in a later iteration.
+
+The original meaning pools are labelled **estimated N5 / N4**. Membership was cross-checked against
+JLPT Sensei's [N5](https://jlptsensei.com/jlpt-n5-kanji-list/) and
+[N4](https://jlptsensei.com/jlpt-n4-kanji-list/) study lists, and core
+meanings against kanjiapi.dev/KANJIDIC2. Word-reading levels were separately
+checked against the [N5 vocabulary](https://jlptsensei.com/jlpt-n5-vocabulary-list/)
+and [N4 vocabulary](https://jlptsensei.com/jlpt-n4-vocabulary-list/) lists.
+N2 kanji membership comes from the [N2-specific list](https://jlptsensei.com/jlpt-n2-kanji-list/);
+N2 vocabulary comes from the pinned Stephen Kraus / Jonathan Waller data described
+in [docs/n2-practice.md](docs/n2-practice.md), independently matched to JMdict.
+Whole-word readings and glosses were checked against JMdict through
+`kanjiapi.dev/v1/words/{character}`. A word can have multiple valid readings;
+only one is offered in a question, and accepted alternatives are excluded from
+the wrong-answer choices.
+The authored/generated practice questions are not official
+test questions or a complete level syllabus. The
+[official JLPT FAQ](https://www.jlpt.jp/e/faq/#anchor28) explains why current
+test-content lists are no longer published. Dictionary source/licence links are
+included in the Quiz view.
+
+See [docs/quiz-data.md](docs/quiz-data.md) for the pool contents, provenance, and
+the process for adding checked questions. Stable IDs preserve existing queue
+progress; historical snapshots remain unchanged when the live pool is edited.
+
+The evolving plan for attempt history, level data, study previews, reading
+questions, and sentence practice is in [docs/quiz-iterations.md](docs/quiz-iterations.md).
+
 ### Backend
 
 In a separate terminal, from the repository root:
@@ -173,7 +362,7 @@ The backend starts a local HTTP server on **http://localhost:8080** and logs a
 startup message. Keep the terminal running; press **Ctrl+C** to stop the server.
 
 On startup, the backend creates `data/shippai-kizuki.sqlite` and the
-`kanji_entries`, `anki_cards`, and `review_events` tables if they do not exist.
+`kanji_entries`, `anki_cards`, `review_events`, and `quiz_attempts` tables if they do not exist.
 It loads saved data rather than seeding demo reviews. A fresh database starts empty.
 Run Go from `backend/` as shown above:
 the database path is relative to the server's working directory.
@@ -225,6 +414,14 @@ API routing when deployment is introduced.
 | GET | `/anki/decks` | Read deck names from the active Anki Desktop profile (`200 OK`) |
 | GET | `/anki/import-status` | Read the saved JP Vocabulary import summary from SQLite |
 | POST | `/anki/import-vocabulary` | Import/re-import JP Vocabulary cards and answer history |
+| POST | `/quiz/attempts` | Validate and save a completed quiz; `201` new, `200` identical retry |
+| GET | `/quiz/questions?mode=meaning&level=N2` | Checked pool and source/version metadata; meaning or reading, N2/N4/N5 |
+| GET | `/quiz/questions?mode=sentence&level=N2&exercise=exercise-4` | Named twelve-question contextual exercise |
+| GET | `/quiz/coverage?mode=meaning&level=N5` | Current-pool attempted/unseen totals plus each item's saved-attempt count and last-practice time |
+| GET | `/quiz/coverage?mode=sentence&level=N2&exercise=exercise-4` | Coverage of the named exercise's twelve targets |
+| GET | `/quiz/attempts?mode=meaning` | Latest 20 completed attempts, optionally filtered by meaning/reading mode |
+| GET | `/quiz/attempts/{id}` | Load a saved result with its complete question/answer snapshot |
+| GET | `/quiz/practice?mode=meaning` | Active candidates and streaks for meaning/reading, oldest practice first |
 
 #### List reviews
 
@@ -614,7 +811,10 @@ npm run lint
 - `npm test` uses Node.js 24's built-in test runner to check dictionary caching,
   shared requests, preloading, retry after errors, URL filter parsing, practice/
   evidence grouping, filtered pagination, non-overlapping page slices, URL page
-  bounds, empty results, and compact page-number links.
+  bounds, empty results, compact page-number links, quiz pool integrity, shuffle
+  behavior, grading, invalid/duplicate quiz submissions, reading choices, and
+  word/reading/meaning feedback consistency, missed-item retries, shared pending
+  saves, failed-save recovery, and history reads after saving.
 - `npm run build` checks TypeScript and produces a production build in `frontend/dist/`.
 - `npm run lint` checks the frontend code for potential issues.
 
@@ -643,6 +843,9 @@ timeouts. Import tests cover both answer-field formats, real rating conversion,
 repeat imports, removals, preserved manual events, transaction rollback, and
 kanji evidence from imported readings. They do not require Anki Desktop running.
 `go vet` checks Go code for common mistakes.
+Quiz tests verify server-side score calculation, complete-attempt validation,
+immutable/idempotent saves, separate mode histories, bounded history responses,
+timestamp ordering, saved snapshot persistence, and database failure/cancellation.
 
 Analytics regression tests also check that kanji scores and readings come from
 one consistent SQLite snapshot during concurrent updates. Cancelled database
@@ -682,6 +885,23 @@ Shippai-kizuki/
 │   ├── dictionary_test.go # Offline dictionary HTTP tests
 │   ├── reviews.go      # SQLite review queries and manual review recording
 │   ├── reviews_test.go # Review API tests
+│   ├── quiz.go         # Quiz request validation, grading, and HTTP handlers
+│   ├── quiz_catalog.go # Embedded question-pool loading, checks, and API
+│   ├── quiz_catalog_test.go # Level pools, malformed content, and legacy compatibility
+│   ├── quiz_coverage.go # Current-pool coverage derived from all saved attempts
+│   ├── quiz_coverage_test.go # Coverage, stable IDs, persistence, and API failures
+│   ├── quiz_data.json  # Original checked N5/N4 meaning and reading pools
+│   ├── quiz_exercises.json # Supplied contextual sentence exercises
+│   ├── quiz_exercise_test.go # Source key, task progress, and migration regressions
+│   ├── quiz_migration.go # Atomic upgrade preserving existing quiz attempts
+│   ├── quiz_n2.generated.json # Bundled 374-meaning / 1,640-reading N2 catalog
+│   ├── quiz_n2.audit.json # Offline source/dictionary verification evidence
+│   ├── quiz_n2_test.go # N2 catalog, snapshots, coverage, and queue regressions
+│   ├── scripts/        # Development-only N2 data build and offline data tests
+│   ├── quiz_practice.go # Cross-attempt candidate replay and practice API
+│   ├── quiz_practice_test.go # Streak, re-entry, mode, and ordering regressions
+│   ├── quiz_store.go   # Immutable SQLite attempt snapshots and history queries
+│   ├── quiz_test.go    # Persistence, validation, idempotence, and history tests
 │   ├── seed_test.go    # Example data used only by automated tests
 │   ├── kanji.go        # Kanji aggregation, evidence rules, and stats endpoint
 │   ├── kanji_test.go   # Kanji scoring and evidence API tests
@@ -691,9 +911,22 @@ Shippai-kizuki/
 │   ├── public/         # Static assets
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── AppNavigation.tsx # Fixed Home/Insights navigation
+│   │   │   ├── AppNavigation.tsx # Fixed Home/Insights/Quiz navigation
 │   │   │   └── app-navigation.css
 │   │   ├── features/
+│   │   │   ├── quiz/
+│   │   │   │   ├── QuizPage.tsx # Setup, active runs, saved review, and retries
+│   │   │   │   ├── QuizQuestion.tsx # One accessible four-choice question
+│   │   │   │   ├── QuizResults.tsx # Score and per-question feedback
+│   │   │   │   ├── QuizAttemptSave.tsx # Save status and safe save retries
+│   │   │   │   ├── QuizHistory.tsx # Recent saved attempts for the selected mode
+│   │   │   │   ├── QuizPractice.tsx # Cross-level candidates and queue sessions
+│   │   │   │   ├── QuizCoverage.tsx # Selected pool's attempted/unseen progress
+│   │   │   │   ├── api.ts       # Pools, saves, history, and practice HTTP calls
+│   │   │   │   ├── useQuizPool.ts # Cancellable level-aware loading and retries
+│   │   │   │   ├── quiz.ts      # Shuffle, grading, and answer progression
+│   │   │   │   ├── types.ts
+│   │   │   │   └── quiz.css
 │   │   │   ├── home/
 │   │   │   │   ├── HomePage.tsx # Introduction, Anki, and recent history
 │   │   │   │   ├── ScoringGuide.tsx
@@ -760,6 +993,10 @@ copyright James William Breen and the Electronic Dictionary Research and
 Development Group (EDRDG), accessed via [kanjiapi.dev](https://kanjiapi.dev/).
 KANJIDIC2 data is provided under [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 See the [EDRDG dictionary licence and documentation](https://www.edrdg.org/edrdg/licence.html).
+Quiz vocabulary readings and English glosses were checked against
+[JMdict](https://www.edrdg.org/wiki/JMdict-EDICT_Dictionary_Project.html) through
+kanjiapi.dev's word API. JMdict is also an EDRDG dictionary covered by the linked
+licence. The quiz pools retain attribution links in the Quiz view.
 The detail view includes source and licence links. Personal review history,
 derived difficulty scores, and vocabulary field data are separate from this
 dictionary data.
@@ -882,6 +1119,12 @@ it does not contact AnkiWeb directly.
   the tool. If using VS Code, restart it too. Verify the installation using the
   version commands above.
 - **Frontend dependencies are missing:** run `npm ci` inside `frontend/`.
+- **Quiz saving/history reports `404 page not found`:** restart Go with `go run .`
+  from `backend/` so it loads the new quiz routes. Retry saving from the result
+  screen afterward. Database creation is automatic.
+- **A completed quiz could not be saved:** keep its results open, start/check Go,
+  and choose **Retry saving**. The stable run ID prevents duplicate rows if the
+  previous save actually committed but its response was lost.
 - **Port 5173 is already in use:** use the alternative local URL printed by Vite.
 - **The backend reports that port 8080 is already in use:** stop any previous
   instance of the backend with Ctrl+C before starting it again.

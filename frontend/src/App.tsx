@@ -5,6 +5,7 @@ import { HomePage } from './features/home/HomePage'
 import { InsightsLayout } from './features/insights/InsightsLayout'
 import { KanjiPage } from './features/kanji/KanjiPage'
 import { VocabularyPage } from './features/vocabulary/VocabularyPage'
+import { QuizPage } from './features/quiz/QuizPage'
 import './App.css'
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
       <main className="app" id="main-content" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/quiz" element={<QuizPage />} />
           <Route path="/insights" element={<InsightsLayout />}>
             <Route index element={<Navigate to="kanji" replace />} />
             <Route path="kanji" element={<KanjiPage />} />

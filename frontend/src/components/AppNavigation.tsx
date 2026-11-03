@@ -13,6 +13,7 @@ export function AppNavigation() {
         <nav className="app-navigation-links" aria-label="Main navigation">
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/insights">Insights</NavLink>
+          <NavLink to="/quiz">Quiz</NavLink>
         </nav>
       </div>
     </header>
