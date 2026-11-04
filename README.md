@@ -253,8 +253,8 @@ and selected level (shown on the button);
 **Change quiz type** returns to setup. Native radio controls support keyboard selection, with focus
 moving to each new question and the final results heading.
 
-Question pools are stored in `backend/quiz_data.json`, the larger
-`backend/quiz_n2.generated.json`, and `backend/quiz_exercises.json`, embedded in the Go binary,
+Question pools are stored in `backend/internal/quiz/data/questions.json`, the larger
+`backend/internal/quiz/data/n2.generated.json`, and `backend/internal/quiz/data/exercises.json`, embedded in the Go binary,
 and loaded through `GET /quiz/questions?mode=meaning&level=N5` (or `N4`, with
 `mode=reading` for word-reading pools). Go validates the checked data at startup. No live
 dictionary or Anki calls are needed to start or answer a quiz. Restart Go after
@@ -479,7 +479,7 @@ measurements of mastery. Three reviews are only a provisional minimum, not a
 statistical confidence guarantee. All reviews currently have equal influence,
 regardless of age. Anki review timestamps and original record types are preserved,
 but recency weighting has not been introduced yet.
-The adjustable scoring constants live in `backend/vocabulary.go`.
+The adjustable scoring constants live in `backend/internal/reviews/vocabulary.go`.
 
 An empty history returns `[]`. Equal scores are ordered by vocabulary text to
 keep the response deterministic.
@@ -617,7 +617,7 @@ prefix/suffix forms. We preserve the dictionary notation and explain it in the
 view. A whole vocabulary word's reading cannot always be inferred simply by
 combining individual kanji readings.
 
-`backend/dictionary.go` first checks the local `kanji_entries` table. A saved
+`backend/internal/dictionary/handler.go` first checks the local `kanji_entries` table. A saved
 entry is returned immediately without contacting the external dictionary. If
 missing, Go calls `https://kanjiapi.dev/v1/kanji/{character}`, validates the
 response, saves it to SQLite, and returns it. The external HTTP client has an
@@ -646,7 +646,7 @@ graphics are not included in this iteration.
 
 #### Local dictionary storage
 
-`backend/database.go` opens SQLite and creates the initial table on startup.
+`backend/internal/storage/database.go` opens SQLite and creates the schema on startup.
 When run from `backend/`, the file is `backend/data/shippai-kizuki.sqlite`.
 The local data directory and SQLite journal files are ignored by Git.
 
@@ -856,7 +856,7 @@ To measure the SQLite/scoring path with a synthetic collection-sized fixture
 (39,701 answers across 1,741 vocabulary items), run inside `backend/`:
 
 ```bash
-go test -run '^$' -bench '^BenchmarkVocabularyStats$' -benchmem
+go test -run '^$' -bench '^BenchmarkVocabularyStats$' -benchmem ./internal/reviews
 ```
 
 The benchmark uses a temporary database, excludes setup and HTTP encoding from
@@ -864,49 +864,37 @@ its timed loop, and reports time and Go-allocated bytes per calculation.
 
 ## Project structure
 
+The Go backend uses feature packages under `internal/`. See
+[docs/backend-structure.md](docs/backend-structure.md) for package responsibilities,
+request flow, data locations, and focused test commands.
+
 ```text
 Shippai-kizuki/
 ├── backend/
 │   ├── go.mod          # Go module identity and Go version
 │   ├── go.sum          # Dependency checksums
 │   ├── main.go         # Server startup, routing, and health endpoint
-│   ├── anki.go         # Read-only AnkiConnect deck-name request
-│   ├── anki_test.go    # Offline AnkiConnect HTTP tests
-│   ├── anki_import.go  # JP Vocabulary batches, transactional import, and status
-│   ├── anki_import_test.go # Import correctness and rollback tests
-│   ├── anki_text.go    # Plain-text extraction and conservative reading parsing
-│   ├── database.go     # SQLite schema and dictionary reads/writes
-│   ├── database_test.go # Isolated SQLite storage tests
-│   ├── analytics_snapshot_test.go # Consistent analytics during concurrent writes
-│   ├── analytics_benchmark_test.go # Collection-sized analytics benchmark
+│   ├── main_test.go    # Public route contracts and HTTP exercise round trip
 │   ├── request_context_test.go # Normal cancellation versus server errors
 │   ├── data/           # Local SQLite file; created at runtime, ignored by Git
-│   ├── dictionary.go   # Database-first dictionary lookup and response conversion
-│   ├── dictionary_test.go # Offline dictionary HTTP tests
-│   ├── reviews.go      # SQLite review queries and manual review recording
-│   ├── reviews_test.go # Review API tests
-│   ├── quiz.go         # Quiz request validation, grading, and HTTP handlers
-│   ├── quiz_catalog.go # Embedded question-pool loading, checks, and API
-│   ├── quiz_catalog_test.go # Level pools, malformed content, and legacy compatibility
-│   ├── quiz_coverage.go # Current-pool coverage derived from all saved attempts
-│   ├── quiz_coverage_test.go # Coverage, stable IDs, persistence, and API failures
-│   ├── quiz_data.json  # Original checked N5/N4 meaning and reading pools
-│   ├── quiz_exercises.json # Supplied contextual sentence exercises
-│   ├── quiz_exercise_test.go # Source key, task progress, and migration regressions
-│   ├── quiz_migration.go # Atomic upgrade preserving existing quiz attempts
-│   ├── quiz_n2.generated.json # Bundled 374-meaning / 1,640-reading N2 catalog
-│   ├── quiz_n2.audit.json # Offline source/dictionary verification evidence
-│   ├── quiz_n2_test.go # N2 catalog, snapshots, coverage, and queue regressions
-│   ├── scripts/        # Development-only N2 data build and offline data tests
-│   ├── quiz_practice.go # Cross-attempt candidate replay and practice API
-│   ├── quiz_practice_test.go # Streak, re-entry, mode, and ordering regressions
-│   ├── quiz_store.go   # Immutable SQLite attempt snapshots and history queries
-│   ├── quiz_test.go    # Persistence, validation, idempotence, and history tests
-│   ├── seed_test.go    # Example data used only by automated tests
-│   ├── kanji.go        # Kanji aggregation, evidence rules, and stats endpoint
-│   ├── kanji_test.go   # Kanji scoring and evidence API tests
-│   ├── vocabulary.go  # Vocabulary aggregation, scoring, and stats endpoint
-│   └── vocabulary_test.go # Scoring and stats API tests
+│   ├── internal/
+│   │   ├── quiz/
+│   │   │   ├── routes.go     # Quiz API registration and catalog initialization
+│   │   │   ├── handler.go    # HTTP request/response handling
+│   │   │   ├── validation.go # Completed-attempt validation and grading
+│   │   │   ├── types.go      # Private question and result snapshots
+│   │   │   ├── store.go      # Immutable SQLite attempts and history
+│   │   │   ├── catalog.go    # Embedded pool loading and checks
+│   │   │   ├── coverage.go   # Current-pool exposure counts
+│   │   │   ├── practice.go   # Cross-attempt practice queues
+│   │   │   ├── *_test.go     # Feature tests and legacy compatibility
+│   │   │   └── data/         # questions.json, exercises.json, n2.generated.json, n2.audit.json
+│   │   ├── anki/            # routes.go, client.go, import.go, text.go, tests
+│   │   ├── dictionary/      # routes.go, handler.go, store.go, tests
+│   │   ├── reviews/         # Review recording, history, vocabulary/kanji scoring, tests
+│   │   ├── storage/         # SQLite opening, schema, migrations, rollback tests
+│   │   └── testutil/        # Shared isolated SQLite test fixture
+│   └── scripts/             # Development-only N2 data build and offline data tests
 ├── frontend/
 │   ├── public/         # Static assets
 │   ├── src/

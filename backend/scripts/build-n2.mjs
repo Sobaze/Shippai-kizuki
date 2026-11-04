@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const root = new URL('../', import.meta.url)
+const root = new URL('../internal/quiz/data/', import.meta.url)
 const revision = 'b062d4e38c4bdd0950ae1d4ec55f04b176182e03'
 const vocabularyURL = `https://raw.githubusercontent.com/stephenmk/yomitan-jlpt-vocab/${revision}/yomitan-jlpt-vocab/term_meta_bank_2.json`
 const cacheDirectory = process.env.N2_BUILD_CACHE || join(tmpdir(), 'opencode', 'shippai-n2-source-cache')
@@ -187,7 +187,7 @@ export async function build() {
   assert.equal(kanjiList.length, 374, 'N2 source-list size changed; review before rebuilding')
   assert.equal(new Set(kanjiList).size, 374)
   const vocabulary = JSON.parse(await source(vocabularyURL))
-  const base = JSON.parse(await readFile(new URL('quiz_data.json', root), 'utf8'))
+  const base = JSON.parse(await readFile(new URL('questions.json', root), 'utf8'))
   const existingWords = new Set(base.pools.filter(pool => pool.mode === 'reading').flatMap(pool => pool.questions.map(q => q.prompt)))
   const candidates = vocabulary.filter(([word, , info]) => info.frequency.displayValue === 'N2' && writtenWord(word) && kana(info.reading) && !existingWords.has(word))
   const characters = [...new Set([...kanjiList, ...candidates.map(([word]) => [...word].find(c => /\p{Script=Han}/u.test(c)))])]
@@ -272,8 +272,8 @@ export async function build() {
     excludedNonKanjiOrUnsupportedOrExisting: vocabulary.length - candidates.length,
     exclusions, meaningEvidence, readingEvidence: [...words.values()],
   }
-  await writeFile(new URL('quiz_n2.generated.json', root), catalogJSON(catalog))
-  await writeFile(new URL('quiz_n2.audit.json', root), JSON.stringify(audit, null, 2) + '\n')
+  await writeFile(new URL('n2.generated.json', root), catalogJSON(catalog))
+  await writeFile(new URL('n2.audit.json', root), JSON.stringify(audit, null, 2) + '\n')
   console.log(`Built ${meaningQuestions.length} N2 meanings and ${readingQuestions.length} dictionary-matched N2 reading questions; ${exclusions.length} unmatched pairs deferred.`)
 }
 

@@ -4,10 +4,10 @@ import type { QuizCoverage, QuizLevel, QuizMode, QuizQuestion, VocabularyExample
 
 // Tests use the canonical backend data; the browser loads these pools via HTTP.
 const data: { pools: { mode: QuizMode; level: QuizLevel; questions: QuizQuestion[] }[] } = JSON.parse(
-  readFileSync(new URL('../../backend/quiz_data.json', import.meta.url), 'utf8'),
+  readFileSync(new URL('../../backend/internal/quiz/data/questions.json', import.meta.url), 'utf8'),
 )
-data.pools.push(...JSON.parse(readFileSync(new URL('../../backend/quiz_n2.generated.json', import.meta.url), 'utf8')).pools)
-data.pools.push(...JSON.parse(readFileSync(new URL('../../backend/quiz_exercises.json', import.meta.url), 'utf8')).pools)
+data.pools.push(...JSON.parse(readFileSync(new URL('../../backend/internal/quiz/data/n2.generated.json', import.meta.url), 'utf8')).pools)
+data.pools.push(...JSON.parse(readFileSync(new URL('../../backend/internal/quiz/data/exercises.json', import.meta.url), 'utf8')).pools)
 export function fixturePool(mode: QuizMode, level: QuizLevel): QuizQuestion[] {
   return data.pools.find((pool) => pool.mode === mode && pool.level === level)!.questions.map((question) => ({
     ...question,

@@ -1,11 +1,18 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 	"path/filepath"
 	"time"
+
+	"github.com/Sobaze/Shippai-kizuki/backend/internal/anki"
+	"github.com/Sobaze/Shippai-kizuki/backend/internal/dictionary"
+	"github.com/Sobaze/Shippai-kizuki/backend/internal/quiz"
+	"github.com/Sobaze/Shippai-kizuki/backend/internal/reviews"
+	"github.com/Sobaze/Shippai-kizuki/backend/internal/storage"
 )
 
 type healthResponse struct {
@@ -19,47 +26,30 @@ func main() {
 }
 
 func run() error {
-	catalog, err := loadQuizCatalog(quizData, n2QuizData, exerciseQuizData)
-	if err != nil {
-		return err
-	}
-	db, err := openDatabase(filepath.Join("data", "shippai-kizuki.sqlite"))
+	db, err := storage.Open(filepath.Join("data", "shippai-kizuki.sqlite"))
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	store := reviewStore{db: db}
-	quizzes := quizStore{db: db}
-	dictionary := kanjiDictionary{
-		db:      db,
-		client:  &http.Client{Timeout: 8 * time.Second},
-		baseURL: "https://kanjiapi.dev/v1/kanji/",
+	mux, err := newMux(db)
+	if err != nil {
+		return err
 	}
-	anki := ankiClient{
-		client:   &http.Client{Timeout: 5 * time.Second},
-		endpoint: "http://127.0.0.1:8765/",
-	}
-	importer := ankiImporter{anki: &anki, db: db}
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /health", healthHandler)
-	mux.HandleFunc("GET /reviews", store.listReviews)
-	mux.HandleFunc("POST /reviews", store.createReview)
-	mux.HandleFunc("GET /vocabulary-stats", store.listVocabularyStats)
-	mux.HandleFunc("GET /kanji-stats", store.listKanjiStats)
-	mux.HandleFunc("GET /kanji/{character}", dictionary.lookup)
-	mux.HandleFunc("GET /anki/decks", anki.listDecks)
-	mux.HandleFunc("GET /anki/import-status", importer.importStatus)
-	mux.HandleFunc("POST /anki/import-vocabulary", importer.importVocabulary)
-	mux.HandleFunc("POST /quiz/attempts", quizzes.createAttempt)
-	mux.HandleFunc("GET /quiz/questions", catalog.listQuestions)
-	mux.HandleFunc("GET /quiz/coverage", quizzes.listCoverage(&catalog))
-	mux.HandleFunc("GET /quiz/attempts", quizzes.listAttempts)
-	mux.HandleFunc("GET /quiz/practice", quizzes.listPracticeCandidates)
-	mux.HandleFunc("GET /quiz/attempts/{id}", quizzes.getAttempt)
-
 	log.Println("Shippai Kizuki backend starting at http://localhost:8080")
 	return http.ListenAndServe("localhost:8080", mux)
+}
+
+func newMux(db *sql.DB) (*http.ServeMux, error) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health", healthHandler)
+	reviews.RegisterRoutes(mux, db)
+	dictionary.RegisterRoutes(mux, db, &http.Client{Timeout: 8 * time.Second}, "https://kanjiapi.dev/v1/kanji/")
+	anki.RegisterRoutes(mux, db, &http.Client{Timeout: 5 * time.Second}, "http://127.0.0.1:8765/")
+	if err := quiz.RegisterRoutes(mux, db); err != nil {
+		return nil, err
+	}
+	return mux, nil
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {

@@ -2,8 +2,8 @@
 
 ## Current pools
 
-`backend/quiz_data.json` holds the original N5/N4 pools; the N2 expansion is in
-`backend/quiz_n2.generated.json`. Contextual exercises are in `backend/quiz_exercises.json`.
+`backend/internal/quiz/data/questions.json` holds the original N5/N4 pools; the N2 expansion is in
+`backend/internal/quiz/data/n2.generated.json`. Contextual exercises are in `backend/internal/quiz/data/exercises.json`.
 Go embeds and merges these files with `//go:embed`,
 validates the combined catalog at startup, and serves one selected pool with its source/version
 metadata through `GET /quiz/questions?mode=meaning&level=N5`.

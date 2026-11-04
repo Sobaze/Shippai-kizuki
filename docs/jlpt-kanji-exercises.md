@@ -70,7 +70,7 @@ is added; the current setup opens Exercise 4 directly.
 
 ## Implementation
 
-`backend/quiz_exercises.json` stores this manually supplied exercise separately
+`backend/internal/quiz/data/exercises.json` stores this manually supplied exercise separately
 from generated N2 vocabulary. It is embedded and merged into the catalog at startup.
 Pools have an `exerciseId` and `title`. Questions have `task`, `exerciseId`, and a
 `context` containing `before`/`after`; the target stays in `prompt`. Splitting the

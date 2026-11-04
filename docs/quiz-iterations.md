@@ -119,7 +119,7 @@ checks with temporary SQLite covered queue sessions in both modes, cancellation,
   Pools are separate, not cumulative. The original twelve N4 IDs are preserved.
 - The initial data migration retained twelve unclassified starter reading questions.
   These are superseded by the levelled reading pools described below.
-- One canonical `backend/quiz_data.json` stores checked questions, example words,
+- One canonical `backend/internal/quiz/data/questions.json` stores checked questions, example words,
   version, check date, and source references. Go embeds/validates it at startup
   and serves selected pools through `/quiz/questions?mode=meaning&level=N5`.
 - The frontend loads the selected pool with cancellation, loading/error/retry

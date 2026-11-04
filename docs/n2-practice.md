@@ -58,9 +58,9 @@ snapshots and are shuffled when a quiz/retry begins.
 
 ## Bundled data and reproducible checks
 
-- `backend/quiz_n2.generated.json`: generated offline question catalog, embedded
-  by Go and merged with the original `quiz_data.json` at startup.
-- `backend/quiz_n2.audit.json`: source membership, dictionary gloss/example
+- `backend/internal/quiz/data/n2.generated.json`: generated offline question catalog, embedded
+  by Go and merged with the original `internal/quiz/data/questions.json` at startup.
+- `backend/internal/quiz/data/n2.audit.json`: source membership, dictionary gloss/example
   evidence, accepted alternative readings, and exclusions. Used in offline
   data checks; it is not sent to the browser or embedded in the application.
 - `backend/scripts/build-n2.mjs`: development-only data build, with a pinned

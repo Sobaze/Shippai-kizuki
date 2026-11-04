@@ -3,8 +3,8 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 import { coreGlosses, disjointMeanings, distance, kanjiFromHTML, nearbyReadings, phoneticKey } from './build-n2.mjs'
 
-const catalog = JSON.parse(await readFile(new URL('../quiz_n2.generated.json', import.meta.url), 'utf8'))
-const audit = JSON.parse(await readFile(new URL('../quiz_n2.audit.json', import.meta.url), 'utf8'))
+const catalog = JSON.parse(await readFile(new URL('../internal/quiz/data/n2.generated.json', import.meta.url), 'utf8'))
+const audit = JSON.parse(await readFile(new URL('../internal/quiz/data/n2.audit.json', import.meta.url), 'utf8'))
 
 test('source parser handles the source website’s optional table closing tags', () => {
   const html = '<tr class=jl-row><td>1<td class="jl-td-k align-middle"><a>党</a><td>tou<td>nakama<td>party<tr class=jl-row><td>2<td class="jl-td-k align-middle"><a>協</a><td>kyou<td>cooperation'
