@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { getQuizAttempt, getQuizCandidates, getQuizCoverage, getQuizHistory, getQuizPool, saveQuizAttempt } from '../src/features/quiz/api.ts'
+import { getQuizAttempt, getQuizCandidates, getQuizCoverage, getQuizExercises, getQuizHistory, getQuizPool, saveQuizAttempt } from '../src/features/quiz/api.ts'
 import { gradeQuiz } from '../src/features/quiz/quiz.ts'
 import { coverageFixture, createMeaningQuiz, fixturePool } from './quiz-fixtures.ts'
 import type { QuizAttemptSubmission, SavedQuizAttempt } from '../src/features/quiz/types.ts'
@@ -13,6 +13,43 @@ function fixture(id: string): QuizAttemptSubmission {
     questions, answers: questions.map((question) => ({ questionId: question.id, selectedAnswer: question.answer })),
   }
 }
+
+test('comprehension lists accept passage-task counts and request the selected practice category', async (t) => {
+  const exercises = [{ id: 'original-reading-1', title: 'Original Reading 1', level: 'N2', category: 'comprehension', original: true,
+    questionCount: 2, readingCount: 0, spellingCount: 0, comprehensionCount: 2 }]
+  t.mock.method(globalThis, 'fetch', async (url: string | URL | Request) => {
+    assert.equal(url, '/api/quiz/exercises?level=N2&category=comprehension')
+    return Response.json({ exercises })
+  })
+  assert.deepEqual(await getQuizExercises('N2', new AbortController().signal, 'comprehension'), exercises)
+  t.mock.method(globalThis, 'fetch', async () => Response.json({ exercises: [{ ...exercises[0], category: 'kanji' }] }))
+  await assert.rejects(getQuizExercises('N2', new AbortController().signal, 'comprehension'), /mismatched/)
+})
+
+test('exercise list uses metadata with real task counts and explains stale or invalid responses', async (t) => {
+  const exercises = Array.from({ length: 11 }, (_, index) => {
+    const id = `exercise-${index + 1}`
+    const questions = fixturePool('sentence', 'N2', id)
+    return { id, title: `Exercise ${index + 1}`, level: 'N2', questionCount: questions.length,
+      readingCount: questions.filter(q => q.task === 'reading').length,
+      spellingCount: questions.filter(q => q.task === 'spelling').length }
+  })
+  const controller = new AbortController()
+  t.mock.method(globalThis, 'fetch', async (url: string | URL | Request, options?: RequestInit) => {
+    assert.equal(url, '/api/quiz/exercises?level=N2')
+    assert.equal(options?.signal, controller.signal)
+    assert.equal(options?.cache, 'no-store')
+    return Response.json({ exercises })
+  })
+  assert.deepEqual(await getQuizExercises('N2', controller.signal), exercises)
+  assert.equal(exercises[9].spellingCount, 0)
+  t.mock.method(globalThis, 'fetch', async () => new Response('404 page not found', { status: 404 }))
+  await assert.rejects(getQuizExercises('N2', controller.signal), /Restart the Go backend/)
+  t.mock.method(globalThis, 'fetch', async () => Response.json({ exercises: [{ ...exercises[0], questionCount: 10 }] }))
+  await assert.rejects(getQuizExercises('N2', controller.signal), /incomplete or mismatched/)
+  t.mock.method(globalThis, 'fetch', async () => Response.json({ exercises: [exercises[0], exercises[0]] }))
+  await assert.rejects(getQuizExercises('N2', controller.signal), /incomplete or mismatched/)
+})
 
 test('named exercise pool and coverage requests include their exercise identity', async (t) => {
   const questions = fixturePool('sentence', 'N2')

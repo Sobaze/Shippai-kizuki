@@ -7,14 +7,14 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   color: var(--text);
-  border: 1px solid #73e5ff50;
-  border-radius: 1rem;
-  background: #11182b;
-  box-shadow: 0 32px 100px #00000090, 0 0 48px #73e5ff12;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+  box-shadow: 0 32px 100px #00000090;
 }
 
 .kanji-detail::backdrop {
-  background: #030714b8;
+  background: #080e0bd0;
   backdrop-filter: blur(6px);
 }
 
@@ -28,7 +28,7 @@
   gap: 1rem;
   padding: 1rem clamp(1rem, 4vw, 2rem);
   border-bottom: 1px solid var(--border);
-  background: #11182b;
+  background: var(--surface);
 }
 
 .kanji-modal-actions,
@@ -45,14 +45,14 @@
   min-height: 2.5rem;
   min-width: 2.5rem;
   padding: 0.4rem 0.75rem;
-  border: 1px solid #73e5ff60;
-  border-radius: 0.5rem;
-  color: var(--cyan);
-  background: var(--cyan-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-control);
+  color: var(--accent);
+  background: var(--accent-bg);
   cursor: pointer;
 }
 
-.kanji-detail-arrow:hover:not(:disabled) { border-color: var(--cyan); background: #1c3d52; }
+.kanji-detail-arrow:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-hover); }
 .kanji-detail-arrow:disabled { opacity: 0.4; cursor: default; }
 
 .kanji-modal-toolbar h2 {
@@ -81,14 +81,14 @@
   display: block;
   font-size: clamp(6rem, 15vw, 9rem);
   line-height: 1.3;
-  color: var(--cyan);
-  text-shadow: 0 0 32px #73e5ff25;
+  color: var(--text);
+  font-family: var(--font-display);
 }
 
 .kanji-detail h3 {
   margin: 0 0 0.5rem;
   font-size: 0.95rem;
-  color: var(--purple);
+  color: var(--secondary);
 }
 
 .kanji-meanings {
@@ -128,7 +128,7 @@
   min-width: 0;
   padding: 1.1rem;
   border: 1px solid var(--border);
-  border-radius: 0.65rem;
+  border-radius: var(--radius-panel);
   background: var(--bg);
 }
 
@@ -143,10 +143,10 @@
 
 .kanji-readings li {
   padding: 0.25rem 0.75rem;
-  border: 1px solid #73e5ff45;
-  border-radius: 0.5rem;
-  color: var(--cyan);
-  background: var(--cyan-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-control);
+  color: var(--accent);
+  background: var(--accent-bg);
   font-size: 1.6rem;
   overflow-wrap: anywhere;
 }
@@ -154,7 +154,7 @@
 .kanji-name-readings summary,
 .kanji-notation summary {
   cursor: pointer;
-  color: var(--purple);
+  color: var(--secondary);
   font-size: 0.85rem;
 }
 
@@ -189,22 +189,22 @@
 }
 
 .kanji-word-reading rt {
-  color: var(--cyan);
+  color: var(--accent);
   font-size: 0.9rem;
 }
 
 .kanji-furigana-toggle {
   padding: 0.2rem 0.4rem;
   border: 1px solid var(--border);
-  border-radius: 0.3rem;
+  border-radius: var(--radius-control);
   background: var(--surface-raised);
-  color: var(--cyan);
+  color: var(--accent);
   font-size: 0.9rem;
   cursor: pointer;
 }
 
 .kanji-furigana-toggle:hover {
-  border-color: var(--cyan);
+  border-color: var(--accent);
 }
 
 .kanji-attribution {
@@ -214,12 +214,12 @@
 }
 
 .kanji-attribution a {
-  color: var(--cyan);
+  color: var(--accent);
   text-underline-offset: 0.2em;
 }
 
 .kanji-attribution a:focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 

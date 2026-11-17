@@ -17,6 +17,14 @@ type quizQuestion struct {
 	ExerciseID     string               `json:"exerciseId,omitempty"`
 	Task           string               `json:"task,omitempty"`
 	Context        *quizSentenceContext `json:"context,omitempty"`
+	Passage        *quizPassage         `json:"passage,omitempty"`
+	Explanation    string               `json:"explanation,omitempty"`
+	Evidence       string               `json:"evidence,omitempty"`
+}
+
+type quizPassage struct {
+	Title string `json:"title"`
+	Text  string `json:"text"`
 }
 
 type quizSentenceContext struct {

@@ -48,7 +48,7 @@ export function QuizHistory({ mode, onReview }: { mode: QuizMode; onReview: (att
     <section className="quiz-card quiz-history" aria-labelledby="quiz-history-heading">
       <div className="quiz-history-header">
         <div>
-          <h2 id="quiz-history-heading">Recent {mode === 'sentence' ? 'JLPT Kanji exercise' : mode === 'reading' ? 'word-reading' : 'meaning'} attempts</h2>
+          <h2 id="quiz-history-heading">Recent {mode === 'sentence' ? 'JLPT practice' : mode === 'reading' ? 'word-reading' : 'meaning'} attempts</h2>
           <p className="quiz-note">Latest 20 completed attempts in this mode. Full quizzes and focused retries are labelled separately.</p>
         </div>
         <button type="button" className="quiz-secondary" disabled={state.status === 'loading' || openingId !== null} onClick={() => {

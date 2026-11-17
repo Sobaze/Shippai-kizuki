@@ -1,7 +1,7 @@
-.insights-header { margin-bottom: 1.5rem; }
+.insights-header { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
 .insights-header h1 { font-size: clamp(1.9rem, 5vw, 3rem); }
 .insights-header > p:not(.eyebrow) { color: var(--muted); }
-.insights-guide-link { color: var(--purple); font-size: 0.9rem; text-underline-offset: 0.25em; }
+.insights-guide-link { color: var(--secondary); font-size: 0.9rem; text-underline-offset: 0.25em; }
 
 .insights-tabs {
   display: flex;
@@ -19,7 +19,7 @@
 }
 
 .insights-tabs a:hover { color: var(--text); }
-.insights-tabs a[aria-current='page'] { color: var(--cyan); border-bottom-color: var(--cyan); }
+.insights-tabs a[aria-current='page'] { color: var(--accent); border-bottom-color: var(--accent); }
 
 .practice-filters {
   display: flex;
@@ -34,18 +34,18 @@
   gap: 0.5rem;
   padding: 0.5rem 0.8rem;
   border: 1px solid var(--border);
-  border-radius: 2rem;
+  border-radius: var(--radius-control);
   color: var(--muted);
   background: var(--bg);
   font-size: 0.85rem;
   cursor: pointer;
 }
 
-.practice-filters button:hover { color: var(--text); border-color: var(--purple); }
-.practice-filters button[aria-pressed='true'] { color: var(--cyan); background: var(--cyan-bg); border-color: #73e5ff70; }
+.practice-filters button:hover { color: var(--text); border-color: var(--secondary); }
+.practice-filters button[aria-pressed='true'] { color: var(--accent); background: var(--accent-bg); border-color: var(--accent-border); }
 .practice-filters button span { color: var(--text); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
 .insights-empty { padding: 1.5rem 0; color: var(--muted); }
-.insights-empty a { color: var(--cyan); }
+.insights-empty a { color: var(--accent); }
 
 .pagination {
   display: flex;
@@ -69,15 +69,15 @@
   min-height: 2.25rem;
   padding: 0.4rem 0.65rem;
   border: 1px solid var(--border);
-  border-radius: 0.4rem;
+  border-radius: var(--radius-control);
   color: var(--muted);
   background: var(--bg);
   font-size: 0.85rem;
   text-decoration: none;
 }
 
-.pagination a:hover { color: var(--text); border-color: var(--cyan); }
-.pagination a[aria-current='page'] { color: var(--cyan); border-color: var(--cyan); background: var(--cyan-bg); }
+.pagination a:hover { color: var(--text); border-color: var(--accent); }
+.pagination a[aria-current='page'] { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
 .pagination-disabled { opacity: 0.45; }
 .pagination-gap { padding: 0 0.15rem; color: var(--muted); }
 

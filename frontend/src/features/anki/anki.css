@@ -2,8 +2,8 @@
   margin-bottom: 2rem;
   padding: clamp(1rem, 4vw, 2rem);
   border: 1px solid var(--border);
-  border-left: 2px solid var(--purple);
-  border-radius: 1rem;
+  border-left: 3px solid var(--accent-border);
+  border-radius: var(--radius-panel);
   background: var(--surface);
   box-shadow: var(--panel-shadow);
 }
@@ -18,7 +18,7 @@
 
 .anki-eyebrow {
   margin: 0 0 0.25rem;
-  color: var(--purple);
+  color: var(--secondary);
   font-size: 0.8rem;
   letter-spacing: 0.05em;
 }
@@ -30,16 +30,16 @@
 
 .anki-header button {
   padding: 0.5rem 1rem;
-  border: 1px solid #73e5ff60;
-  border-radius: 0.5rem;
-  color: var(--cyan);
-  background: var(--cyan-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-control);
+  color: var(--accent);
+  background: var(--accent-bg);
   cursor: pointer;
 }
 
 .anki-header button:hover:not(:disabled) {
-  background: #1c3d52;
-  border-color: var(--cyan);
+  background: var(--accent-hover);
+  border-color: var(--accent);
 }
 
 .anki-header button:disabled {
@@ -65,7 +65,7 @@
 }
 
 .anki-status span {
-  color: var(--green);
+  color: var(--positive);
   font-weight: 600;
 }
 
@@ -81,14 +81,14 @@
 .anki-decks li {
   padding: 0.85rem 1rem;
   border: 1px solid var(--border);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-control);
   background: var(--bg);
   overflow-wrap: anywhere;
 }
 
 .anki-error,
 .anki-import-error {
-  color: var(--pink);
+  color: var(--negative);
 }
 
 .anki-import {
@@ -99,10 +99,10 @@
 
 .anki-import h3 {
   margin: 0;
-  color: var(--purple);
+  color: var(--secondary);
   font-size: 1.1rem;
 }
 
 .anki-import-summary strong {
-  color: var(--green);
+  color: var(--positive);
 }

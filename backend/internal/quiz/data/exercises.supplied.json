@@ -1,0 +1,218 @@
+{
+  "version": 1,
+  "suppliedAt": "2026-11-10",
+  "source": "User-supplied JapaneseTest4You JLPT N2 Kanji exercises, published March 14, 2015; https://japanesetest4you.com/",
+  "exercises": [
+    { "number": 1, "passages": [
+      "語義だけでなく、内容についてさまざまな角度から調べ、理解することが必要です。",
+      "大原さんは、検診で「問題なし」とされた半年後に体調を壊し、病院でがんとしんだんされ１年で亡くなりました。",
+      "あるキーワードで検索すると、古い記事ばかりヒットしてしまい、有益な情報が得られないということも少なくない。そんな場合は、期間を指定して検索してみよう。",
+      "遺伝子レベルでがんの可能性を発見して、経過観察も含めた治療を開始してとうけいをとれば、１０年生存率も飛躍的に上がります。その治療に意味があるかは言うまでもありません。",
+      "天気予報によれば、来週の日本列島は、全国的に晴天が続くそうです。",
+      "それから二ヵ月後、北朝鮮は地下核実験を行い、１９５３の休戦協定には縛られないと宣言した。",
+      "数ヶ月前、仕上げたげんこうを渡したときに編集者の顔に浮かんだ表情も、いまのあなたと同じだ。",
+      "アユミは部屋のむこうにある鏡の前まで行くと、なめらかな髪の毛をうっとりと撫でた。",
+      "にもつのじゅうりょうが２０キロをちょうかした場合は、ついか料金をせいきゅうされます。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "reading", "target": "角度", "choices": ["かくど", "かくたび", "すみど", "すみたび"], "correct": 1, "written": "角度", "reading": "かくど", "meaning": "angle; point of view" },
+      { "number": 2, "passage": 1, "task": "spelling", "target": "しんだん", "choices": ["診断", "珍断", "修断", "惨断"], "correct": 1, "written": "診断", "reading": "しんだん", "meaning": "diagnosis" },
+      { "number": 3, "passage": 2, "task": "reading", "target": "指定", "choices": ["じてい", "じってい", "してい", "しってい"], "correct": 3, "written": "指定", "reading": "してい", "meaning": "designation; specification" },
+      { "number": 4, "passage": 3, "task": "spelling", "target": "とうけい", "choices": ["結計", "絡計", "絞計", "統計"], "correct": 4, "written": "統計", "reading": "とうけい", "meaning": "statistics" },
+      { "number": 5, "passage": 4, "task": "reading", "target": "列島", "choices": ["れいしま", "れっとう", "れいとう", "れっしま"], "correct": 2, "written": "列島", "reading": "れっとう", "meaning": "archipelago; chain of islands" },
+      { "number": 6, "passage": 4, "task": "reading", "target": "晴天", "choices": ["せいてん", "せいでん", "すいてん", "すいでん"], "correct": 1, "written": "晴天", "reading": "せいてん", "meaning": "fine weather; clear sky" },
+      { "number": 7, "passage": 5, "task": "reading", "target": "縛られない", "choices": ["しぼられない", "しばられない", "せぼられない", "せばられない"], "correct": 2, "written": "縛られない", "reading": "しばられない", "meaning": "not bound; not constrained (negative passive of 縛る)" },
+      { "number": 8, "passage": 6, "task": "spelling", "target": "げんこう", "choices": ["原稿", "願稿", "原橋", "願橋"], "correct": 1, "written": "原稿", "reading": "げんこう", "meaning": "manuscript; draft" },
+      { "number": 9, "passage": 7, "task": "reading", "target": "撫でた", "choices": ["はでた", "なでた", "いでた", "ゆでた"], "correct": 2, "written": "撫でた", "reading": "なでた", "meaning": "stroked; patted (past form of 撫でる)" },
+      { "number": 10, "passage": 8, "task": "spelling", "target": "じゅうりょう", "choices": ["重料", "集両", "重量", "銃量"], "correct": 3, "written": "重量", "reading": "じゅうりょう", "meaning": "weight" },
+      { "number": 11, "passage": 8, "task": "spelling", "target": "ちょうか", "choices": ["越過", "超課", "越課", "超過"], "correct": 4, "written": "超過", "reading": "ちょうか", "meaning": "exceeding; excess" },
+      { "number": 12, "passage": 8, "task": "spelling", "target": "ついか", "choices": ["追加", "堆加", "追価", "堆価"], "correct": 1, "written": "追加", "reading": "ついか", "meaning": "addition; extra" }
+    ] },
+    { "number": 2, "passages": [
+      "人間性とは何なのかをあらためて問い直し、未来の世代に対してどんな価値を残していきたいのかを真剣に考え始める必要があると思う。",
+      "投資家の中には、短い期間で売買を繰り返し、小さな利益を積み上げて、トータルで大きな利益をねらう人もいる。",
+      "ちょうどこの瞬間が、より軽い荷物をせおった機敏な人たちが追いつき、横に並び、そしておそらく追い越していく時なのだ。",
+      "１０年後には、売上を今の倍くらいにはしたいと思いますし、従業員の数も５割アップを目指しています。",
+      "港封鎖はさらにげんじゅうになり、紅茶、コーヒー、ファッション誌、書籍などのぜいたく品はどれも品薄となり、法外な高価がついた。",
+      "デザインとは、表面的にどう見えるかだけの問題ではない。製品の本質を反映していなければならない。",
+      "いまのまま織田をCEOとした場合、倒産を避けられるかくりつは１０パーセントしかないと思う。",
+      "ここでは、本題に入る前に次の四つのポイントを確実に抑えておきましょう。",
+      "北極では現在、地球温暖化の影響で北極海の海氷面積が大幅にしゅくしょうしている。",
+      "Google検索の最大の特徴は、膨大なインターネット全体から超高速かつ高い品質で目的のウェブページを探してくれること。",
+      "図書室は巨大なせいほうけいの部屋で、色の濃い板張りの壁が上から下までめぐらされている。",
+      "政府の調査によれば、台風による農産物の被害は数億円にのぼると言う。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "spelling", "target": "あらためて", "choices": ["紀めて", "記めて", "改めて", "妃めて"], "correct": 3, "written": "改めて", "reading": "あらためて", "meaning": "anew; again; afresh" },
+      { "number": 2, "passage": 1, "task": "reading", "target": "売買", "choices": ["うか", "うばい", "ばいか", "ばいばい"], "correct": 4, "written": "売買", "reading": "ばいばい", "meaning": "buying and selling; trade" },
+      { "number": 3, "passage": 2, "task": "spelling", "target": "せおった", "choices": ["背追った", "背織った", "背負った", "背折った"], "correct": 3, "written": "背負った", "reading": "せおった", "meaning": "carried on one's back; shouldered (past form of 背負う)" },
+      { "number": 4, "passage": 3, "task": "reading", "target": "売上", "choices": ["うりうえ", "うりじょう", "うりうわ", "うりあげ"], "correct": 4, "written": "売上", "reading": "うりあげ", "meaning": "sales; proceeds" },
+      { "number": 5, "passage": 4, "task": "spelling", "target": "げんじゅう", "choices": ["厳重", "敢重", "厳動", "敢動"], "correct": 1, "written": "厳重", "reading": "げんじゅう", "meaning": "strict; stringent; thorough" },
+      { "number": 6, "passage": 5, "task": "reading", "target": "反映", "choices": ["はんえ", "はんうつ", "はんえい", "たんえい"], "correct": 3, "written": "反映", "reading": "はんえい", "meaning": "reflection; reflecting" },
+      { "number": 7, "passage": 6, "task": "spelling", "target": "かくりつ", "choices": ["確交", "確傘", "確率", "確卒"], "correct": 3, "written": "確率", "reading": "かくりつ", "meaning": "probability" },
+      { "number": 8, "passage": 7, "task": "reading", "target": "抑えて", "choices": ["ささえて", "おさえて", "ひかえて", "ととなえて"], "correct": 2, "written": "抑えて", "reading": "おさえて", "meaning": "holding down; keeping in check (connective form of 抑える)" },
+      { "number": 9, "passage": 8, "task": "spelling", "target": "しゅくしょう", "choices": ["縮少", "宿小", "宿少", "縮小"], "correct": 4, "written": "縮小", "reading": "しゅくしょう", "meaning": "reduction; shrinking" },
+      { "number": 10, "passage": 9, "task": "reading", "target": "膨大", "choices": ["かくだい", "こうだい", "ぼうだい", "そくだい"], "correct": 3, "written": "膨大", "reading": "ぼうだい", "meaning": "enormous; vast" },
+      { "number": 11, "passage": 10, "task": "spelling", "target": "せいほうけい", "choices": ["生方形", "正方形", "生方型", "正方型"], "correct": 2, "written": "正方形", "reading": "せいほうけい", "meaning": "square" },
+      { "number": 12, "passage": 11, "task": "reading", "target": "農産物", "choices": ["のさんもの", "のうさんぶつ", "のうさんもの", "のさんぶつ"], "correct": 2, "written": "農産物", "reading": "のうさんぶつ", "meaning": "agricultural produce; farm products" }
+    ] },
+    { "number": 3, "passages": [
+      "彼らは、公聴会で発言する明確なメッセージと、ありとあらゆる想定問答を用意してくれた。",
+      "飾り綱の向こうの階段は、いっそうけわしい螺旋を描きながら真っ暗闇へとくだっている。",
+      "Facebook広告は、掲出して短期間で結果が出ますから、どんどん改善をして、より良い成果を目指すことができます。",
+      "速度計の数字がじそく百キロを越えようとしている。",
+      "英語は、単語よりもフレーズで捉えることが重要です。",
+      "水野さんは農家の娘を演じるので、健康的に見せるため、さつえいの２ヶ月ぐらい前から３食お米を食べて５キロ増量したそうです。",
+      "この地域の多くの国々はどのような国家体制が自国の社会と環境に最も合っているかという問題に悩んでいた。",
+      "これから創業を目指している方、新会社をつくろうと思っている方は、できるだけ多くの融資を受けられるように知恵をしぼり、行動してください。",
+      "声も肉体の一部と考え、筋トレと同じ感覚で、毎日、声を出すトレーニングを重ねることが必要です。",
+      "学校でしょうぎょうを学び、卒業後は農薬会社に就職しました。",
+      "夏は水のじょうはつがはやいので、ぬれたタオルもすぐ乾いてしまう。",
+      "私は仕事の都合で帰宅時間が不規則で、早く帰ることもあれば、夜中になることもある。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "reading", "target": "問答", "choices": ["もんとう", "といとう", "といどう", "もんどう"], "correct": 4, "written": "問答", "reading": "もんどう", "meaning": "questions and answers; dialogue" },
+      { "number": 2, "passage": 1, "task": "spelling", "target": "けわしい", "choices": ["剣しい", "検しい", "険しい", "倹しい"], "correct": 3, "written": "険しい", "reading": "けわしい", "meaning": "steep; rugged; difficult" },
+      { "number": 3, "passage": 2, "task": "reading", "target": "目指す", "choices": ["めなす", "めざす", "めだす", "めざます"], "correct": 2, "written": "目指す", "reading": "めざす", "meaning": "to aim for; to aspire to" },
+      { "number": 4, "passage": 3, "task": "spelling", "target": "じそく", "choices": ["時束", "時速", "時疎", "時勅"], "correct": 2, "written": "時速", "reading": "じそく", "meaning": "speed per hour" },
+      { "number": 5, "passage": 4, "task": "reading", "target": "捉える", "choices": ["たとえる", "そろえる", "こごえる", "とらえる"], "correct": 4, "written": "捉える", "reading": "とらえる", "meaning": "to grasp; to capture" },
+      { "number": 6, "passage": 5, "task": "spelling", "target": "さつえい", "choices": ["最景", "撮影", "最影", "撮景"], "correct": 2, "written": "撮影", "reading": "さつえい", "meaning": "filming; photography" },
+      { "number": 7, "passage": 6, "task": "reading", "target": "体制", "choices": ["ていせい", "たいそう", "ていし", "たいせい"], "correct": 4, "written": "体制", "reading": "たいせい", "meaning": "system; regime; structure" },
+      { "number": 8, "passage": 7, "task": "spelling", "target": "しぼり", "choices": ["絵り", "絶り", "絞り", "縛り"], "correct": 3, "written": "絞り", "reading": "しぼり", "meaning": "squeezing out; racking one's brains (connective form of 絞る)" },
+      { "number": 9, "passage": 8, "task": "reading", "target": "重ねる", "choices": ["ひねる", "おもねる", "かさねる", "つらねる"], "correct": 3, "written": "重ねる", "reading": "かさねる", "meaning": "to repeat; to pile up" },
+      { "number": 10, "passage": 9, "task": "spelling", "target": "しょうぎょう", "choices": ["隔業", "商業", "商撲", "商僕"], "correct": 2, "written": "商業", "reading": "しょうぎょう", "meaning": "commerce; trade" },
+      { "number": 11, "passage": 10, "task": "spelling", "target": "じょうはつ", "choices": ["上発", "蒸発", "蒸溌", "上溌"], "correct": 2, "written": "蒸発", "reading": "じょうはつ", "meaning": "evaporation" },
+      { "number": 12, "passage": 11, "task": "reading", "target": "不規則", "choices": ["ふきそく", "ぶきそく", "ふきさく", "ぶきさく"], "correct": 1, "written": "不規則", "reading": "ふきそく", "meaning": "irregular; erratic" }
+    ] },
+    { "number": 5, "passages": [
+      "がん治療は日々進んでおり、患者さんが受け取れる恩恵は、わずかでも日々増えているのです。",
+      "わたしの研究の大半は、未知のエネルギーの場をそくていすることが中心だから、無関係の放射エネルギーや雑音の届かない場所でおこなう必要がある。",
+      "思考が質量を持っているなら、思考は重力を持ち、物体を引き寄せることができます。",
+      "彼は世論の反戦ムードに押され、北ベトナム爆撃のていしを表明したテレビ演説の最後に突然、次の大統領選には出馬しないと宣言した。",
+      "傾きの急な側面の下に六角形の容器があり、そこに水がたたえられている。",
+      "コン・ユが久しぶりに日本の劇場にとうじょうした。",
+      "「検診」によって、どこにどのようながんができたかを把握することができれば、戦略的に治療を組み立てることができるのですから、「検診」も有効なのです。",
+      "その恐ろしい事件の直後の数時間で、じゅんすい知性科学の分野は大きな発展をとげた。",
+      "取引を解禁して需要を満たせば、ヤミ市場を壊滅させられるし、密猟対策と保護に必要な資金も得られるというのだ。",
+      "彼女はじかんわりを説明しながら、案内図にそれぞれの教室への行き方をマーカーで書き入れると、細長い紙切れをくれた。",
+      "需要が刺激された上、違法な象牙を合法と装って取引しやすくなった。",
+      "早稲田大学はしりつで学費も安くない。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "reading", "target": "恩恵", "choices": ["おんえ", "おんえい", "おんけい", "おんけつ"], "correct": 3, "written": "恩恵", "reading": "おんけい", "meaning": "benefit; blessing" },
+      { "number": 2, "passage": 1, "task": "spelling", "target": "そくてい", "choices": ["測定", "側定", "則定", "賄定"], "correct": 1, "written": "測定", "reading": "そくてい", "meaning": "measurement" },
+      { "number": 3, "passage": 2, "task": "reading", "target": "重力", "choices": ["ちょうりき", "じゅうりき", "ちょうりょく", "じゅうりょく"], "correct": 4, "written": "重力", "reading": "じゅうりょく", "meaning": "gravity; gravitational force" },
+      { "number": 4, "passage": 3, "task": "spelling", "target": "ていし", "choices": ["亮止", "涼止", "停止", "亭止"], "correct": 3, "written": "停止", "reading": "ていし", "meaning": "stoppage; suspension" },
+      { "number": 5, "passage": 4, "task": "reading", "target": "容器", "choices": ["よき", "ようき", "よくき", "よっき"], "correct": 2, "written": "容器", "reading": "ようき", "meaning": "container; vessel" },
+      { "number": 6, "passage": 5, "task": "spelling", "target": "とうじょう", "choices": ["澄場", "廃場", "発場", "登場"], "correct": 4, "written": "登場", "reading": "とうじょう", "meaning": "appearance; entrance on stage" },
+      { "number": 7, "passage": 6, "task": "reading", "target": "組み立てる", "choices": ["ぐみたてる", "ぐみだてる", "くみたてる", "くみだてる"], "correct": 3, "written": "組み立てる", "reading": "くみたてる", "meaning": "to assemble; to construct" },
+      { "number": 8, "passage": 7, "task": "spelling", "target": "じゅんすい", "choices": ["純粋", "純忰", "鈍粋", "鈍忰"], "correct": 1, "written": "純粋", "reading": "じゅんすい", "meaning": "pure; genuine" },
+      { "number": 9, "passage": 8, "task": "reading", "target": "対策", "choices": ["たいせき", "たいさく", "たいむち", "たいもく"], "correct": 2, "written": "対策", "reading": "たいさく", "meaning": "countermeasure; measures to deal with something" },
+      { "number": 10, "passage": 9, "task": "spelling", "target": "じかんわり", "choices": ["時間割", "時間憲", "時間轄", "時間害"], "correct": 1, "written": "時間割", "reading": "じかんわり", "meaning": "timetable; class schedule" },
+      { "number": 11, "passage": 10, "task": "reading", "target": "装って", "choices": ["あって", "きそって", "よそおって", "あじわって"], "correct": 3, "written": "装って", "reading": "よそおって", "meaning": "pretending; disguising as (connective form of 装う)" },
+      { "number": 12, "passage": 11, "task": "spelling", "target": "しりつ", "choices": ["秩立", "私立", "称立", "秋立"], "correct": 2, "written": "私立", "reading": "しりつ", "meaning": "private (institution)" }
+    ] },
+    { "number": 6, "passages": [
+      "松本は一覧の上のほうにある項目を指さした。",
+      "彼女はドアを開錠し、心も軽やかにうすぐらいらせん階段をおりていった。",
+      "北極については周辺５カ国（アメリカ、カナダ、デンマーク、ノルウェー、ロシア）が領有権を主張している。",
+      "わたしはしっけを吸い込んですっかりからまった髪をとかしながら、鏡に映った自分の顔を見る。",
+      "飛行機が九時間遅れたので見学時間に間に合わなかった。",
+      "ピーチで縫い物をする母の姿をうかんでくる。",
+      "グラフの太いきょくせんは、こむぎのゆにゅうりょうの年間の変化をしめしている。",
+      "今週は各地でいろいろなお祭りがあります。",
+      "２００２年の夏には、想像した以上に問題が深刻だとはんめいした。",
+      "警官は唇を引き結び、部屋の四隅を入念に調べた。",
+      "年を取って頭の働きがにぶくなった。",
+      "どの壁にも本のつまった背の高い本棚が並んでいる。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "reading", "target": "項目", "choices": ["こうめ", "うなじめ", "こうもく", "うなじもく"], "correct": 3, "written": "項目", "reading": "こうもく", "meaning": "item; entry; heading" },
+      { "number": 2, "passage": 1, "task": "spelling", "target": "うすぐらい", "choices": ["落暗い", "薄暗い", "落倍い", "薄倍い"], "correct": 2, "written": "薄暗い", "reading": "うすぐらい", "meaning": "dim; gloomy" },
+      { "number": 3, "passage": 2, "task": "reading", "target": "周辺", "choices": ["しゅうえ", "しゅうべ", "しゅうべん", "しゅうへん"], "correct": 4, "written": "周辺", "reading": "しゅうへん", "meaning": "surrounding area; vicinity" },
+      { "number": 4, "passage": 3, "task": "spelling", "target": "しっけ", "choices": ["温気", "潤気", "湿気", "溝気"], "correct": 3, "written": "湿気", "reading": "しっけ", "meaning": "humidity; dampness" },
+      { "number": 5, "passage": 4, "task": "reading", "target": "見学", "choices": ["みがく", "けんがく", "みまなび", "けんまなび"], "correct": 2, "written": "見学", "reading": "けんがく", "meaning": "study visit; observing a place" },
+      { "number": 6, "passage": 5, "task": "spelling", "target": "うかんで", "choices": ["浮かんで", "流かんで", "漂かんで", "漆かんで"], "correct": 1, "written": "浮かんで", "reading": "うかんで", "meaning": "floating; coming to mind (connective form of 浮かぶ)" },
+      { "number": 7, "passage": 6, "task": "spelling", "target": "ゆにゅうりょう", "choices": ["有入量", "輸入量", "夕入量", "優入量"], "correct": 2, "written": "輸入量", "reading": "ゆにゅうりょう", "meaning": "import volume; quantity imported" },
+      { "number": 8, "passage": 7, "task": "reading", "target": "各地", "choices": ["かっじ", "かっち", "かくち", "かくじ"], "correct": 3, "written": "各地", "reading": "かくち", "meaning": "various places; every region" },
+      { "number": 9, "passage": 8, "task": "spelling", "target": "はんめい", "choices": ["判明", "半明", "伴明", "畔明"], "correct": 1, "written": "判明", "reading": "はんめい", "meaning": "becoming clear; being established" },
+      { "number": 10, "passage": 9, "task": "reading", "target": "唇", "choices": ["さしひき", "だらしな", "なかゆび", "くちびる"], "correct": 4, "written": "唇", "reading": "くちびる", "meaning": "lip; lips" },
+      { "number": 11, "passage": 10, "task": "spelling", "target": "にぶく", "choices": ["緩く", "狭く", "鈍く", "重く"], "correct": 3, "written": "鈍く", "reading": "にぶく", "meaning": "dull; slow (adverbial form of 鈍い)" },
+      { "number": 12, "passage": 11, "task": "spelling", "target": "つまった", "choices": ["詰まった", "話まった", "詩まった", "該まった"], "correct": 1, "written": "詰まった", "reading": "つまった", "meaning": "packed; filled (past form of 詰まる)" }
+    ] },
+    { "number": 7, "passages": [
+      "印刷技術は昔に比べてかなり進歩してきた。",
+      "八十さいのそふは、毎朝近くのこうえんを散歩する。",
+      "この住宅は、光が部屋の奥まで届くようにつくられている。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "reading", "target": "印刷", "choices": ["いんさつ", "いんしゃつ", "あんさつ", "あんしゃつ"], "correct": 1, "written": "印刷", "reading": "いんさつ", "meaning": "printing" },
+      { "number": 2, "passage": 0, "task": "reading", "target": "技術", "choices": ["きじゅつ", "きげい", "ぎげい", "ぎじゅつ"], "correct": 4, "written": "技術", "reading": "ぎじゅつ", "meaning": "technology; technique; skill" },
+      { "number": 3, "passage": 0, "task": "reading", "target": "比べて", "choices": ["くらべて", "のらべて", "しらべて", "おさべて"], "correct": 1, "written": "比べて", "reading": "くらべて", "meaning": "compared with (connective form of 比べる)" },
+      { "number": 4, "passage": 0, "task": "reading", "target": "進歩", "choices": ["さんぽ", "さんぼ", "しんぽ", "しんぼ"], "correct": 3, "written": "進歩", "reading": "しんぽ", "meaning": "progress; advancement" },
+      { "number": 5, "passage": 1, "task": "spelling", "target": "さい", "choices": ["栽", "裁", "歳", "蔵"], "correct": 3, "written": "歳", "reading": "さい", "meaning": "years old; counter for age" },
+      { "number": 6, "passage": 1, "task": "spelling", "target": "そふ", "choices": ["租父", "粗父", "祖父", "組父"], "correct": 3, "written": "祖父", "reading": "そふ", "meaning": "grandfather" },
+      { "number": 7, "passage": 1, "task": "spelling", "target": "こうえん", "choices": ["郊遠", "郊園", "公遠", "公園"], "correct": 4, "written": "公園", "reading": "こうえん", "meaning": "park" },
+      { "number": 8, "passage": 2, "task": "reading", "target": "光", "choices": ["ひかり", "いかり", "こめ", "きはり"], "correct": 1, "written": "光", "reading": "ひかり", "meaning": "light" },
+      { "number": 9, "passage": 2, "task": "reading", "target": "奥", "choices": ["うち", "おく", "なか", "ちゅう"], "correct": 2, "written": "奥", "reading": "おく", "meaning": "inner part; back; interior" },
+      { "number": 10, "passage": 2, "task": "reading", "target": "届く", "choices": ["とどく", "ひらく", "きく", "おどろく"], "correct": 1, "written": "届く", "reading": "とどく", "meaning": "to reach; to arrive" }
+    ] },
+    { "number": 8, "passages": [
+      "機械のせいのうが高度化してくると、人間はそれらを使いこなすためにたえず勉強を続けなければならず、ますますいそがしくなっていきます。人間の生活を楽にするために発明されたはずの機械のせいで、ぎゃくにいそがしくなるというのは、実にひにくな話です。",
+      "大きい地震の際には、まず、被害に関する確かな情報を得ることが大切だ。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "spelling", "target": "せいのう", "choices": ["性能", "生能", "生熊", "性熊"], "correct": 1, "written": "性能", "reading": "せいのう", "meaning": "performance; capability" },
+      { "number": 2, "passage": 0, "task": "spelling", "target": "たえず", "choices": ["耐えず", "堪えず", "絶えず", "汰えず"], "correct": 3, "written": "絶えず", "reading": "たえず", "meaning": "constantly; without interruption" },
+      { "number": 3, "passage": 0, "occurrence": 1, "task": "spelling", "target": "いそがしく", "choices": ["芯しく", "心しく", "亡しく", "忙しく"], "correct": 4, "written": "忙しく", "reading": "いそがしく", "meaning": "busy; busily (adverbial form of 忙しい)" },
+      { "number": 4, "passage": 0, "task": "spelling", "target": "ぎゃくに", "choices": ["却に", "虐に", "逆に", "尺に"], "correct": 3, "written": "逆に", "reading": "ぎゃくに", "meaning": "conversely; on the contrary" },
+      { "number": 5, "passage": 0, "task": "spelling", "target": "ひにく", "choices": ["被肉", "皮肉", "病肉", "彼肉"], "correct": 2, "written": "皮肉", "reading": "ひにく", "meaning": "irony; sarcasm" },
+      { "number": 6, "passage": 1, "task": "reading", "target": "地震", "choices": ["じしん", "ぢしん", "ししん", "でしん"], "correct": 1, "written": "地震", "reading": "じしん", "meaning": "earthquake" },
+      { "number": 7, "passage": 1, "task": "reading", "target": "際", "choices": ["とき", "せい", "さい", "あいだ"], "correct": 3, "written": "際", "reading": "さい", "meaning": "occasion; time; when" },
+      { "number": 8, "passage": 1, "task": "reading", "target": "被害", "choices": ["びがい", "はがい", "ひがい", "へがい"], "correct": 3, "written": "被害", "reading": "ひがい", "meaning": "damage; harm" },
+      { "number": 9, "passage": 1, "task": "reading", "target": "確かな", "choices": ["さわやか", "たしかな", "ゆたかな", "やわらかな"], "correct": 2, "written": "確かな", "reading": "たしかな", "meaning": "reliable; certain; accurate" },
+      { "number": 10, "passage": 1, "task": "reading", "target": "情報", "choices": ["じょうほう", "じょほ", "じょうほ", "じょほう"], "correct": 1, "written": "情報", "reading": "じょうほう", "meaning": "information" }
+    ] },
+    { "number": 9, "passages": [
+      "食料をほぞんするしゅだんとしては、塩につけたり、かんづめにしたり、かんそうさせたりする方法があります。",
+      "強盗に鋭いナイフで腕を刺された。",
+      "ガラスのはへんでゆびにけがをして、ほうたいをまいてもらった。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "spelling", "target": "ほぞん", "choices": ["保守", "保在", "保蔵", "保存"], "correct": 4, "written": "保存", "reading": "ほぞん", "meaning": "preservation; storage" },
+      { "number": 2, "passage": 0, "task": "spelling", "target": "しゅだん", "choices": ["手段", "取担", "取段", "手担"], "correct": 1, "written": "手段", "reading": "しゅだん", "meaning": "means; method" },
+      { "number": 3, "passage": 0, "task": "spelling", "target": "かんづめ", "choices": ["瓶詰", "缶詰", "瓶結", "缶結"], "correct": 2, "written": "缶詰", "reading": "かんづめ", "meaning": "canned food; canning" },
+      { "number": 4, "passage": 0, "task": "spelling", "target": "かんそう", "choices": ["干操", "乾操", "干燥", "乾燥"], "correct": 4, "written": "乾燥", "reading": "かんそう", "meaning": "drying; dryness" },
+      { "number": 5, "passage": 1, "task": "reading", "target": "強盗", "choices": ["きょとう", "ごうとう", "ごと", "きょうとう"], "correct": 2, "written": "強盗", "reading": "ごうとう", "meaning": "robber; robbery" },
+      { "number": 6, "passage": 1, "task": "reading", "target": "鋭い", "choices": ["にぶい", "しつこい", "するどい", "ぬくい"], "correct": 3, "written": "鋭い", "reading": "するどい", "meaning": "sharp; pointed" },
+      { "number": 7, "passage": 1, "task": "reading", "target": "腕", "choices": ["うで", "ので", "こし", "はら"], "correct": 1, "written": "腕", "reading": "うで", "meaning": "arm" },
+      { "number": 8, "passage": 1, "task": "reading", "target": "刺された", "choices": ["とされた", "さされた", "しされた", "おされた"], "correct": 2, "written": "刺された", "reading": "さされた", "meaning": "was stabbed (past passive of 刺す)" },
+      { "number": 9, "passage": 2, "task": "spelling", "target": "はへん", "choices": ["皮片", "彼片", "石片", "破片"], "correct": 4, "written": "破片", "reading": "はへん", "meaning": "fragment; broken piece" },
+      { "number": 10, "passage": 2, "task": "spelling", "target": "けが", "choices": ["怪我", "毛我", "怪蛾", "毛蛾"], "correct": 1, "written": "怪我", "reading": "けが", "meaning": "injury" }
+    ] },
+    { "number": 10, "passages": [
+      "この放送局の正面は、駐車だけでなく停車も禁止されている。",
+      "男女平等をテーマにした会議が開かれ、各国の代表が出席して、家庭や職場で起こっている問題を話し合った。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "reading", "target": "放送局", "choices": ["ほそうきょく", "ほうそうきょく", "ほうそきょく", "ほうそうきょっく"], "correct": 2, "written": "放送局", "reading": "ほうそうきょく", "meaning": "broadcasting station" },
+      { "number": 2, "passage": 0, "task": "reading", "target": "正面", "choices": ["しょうめん", "せいめん", "しょうがん", "せいがん"], "correct": 1, "written": "正面", "reading": "しょうめん", "meaning": "front; facade" },
+      { "number": 3, "passage": 0, "task": "reading", "target": "停車", "choices": ["としゃ", "ていしゃ", "ていぐるま", "とぐるま"], "correct": 2, "written": "停車", "reading": "ていしゃ", "meaning": "stopping a vehicle" },
+      { "number": 4, "passage": 0, "task": "reading", "target": "禁止", "choices": ["かんし", "けんし", "きんし", "こし"], "correct": 3, "written": "禁止", "reading": "きんし", "meaning": "prohibition; ban" },
+      { "number": 5, "passage": 1, "task": "reading", "target": "平等", "choices": ["ひょうどう", "へいどう", "びょうどう", "へいとう"], "correct": 3, "written": "平等", "reading": "びょうどう", "meaning": "equality; equal treatment" },
+      { "number": 6, "passage": 1, "task": "reading", "target": "各国", "choices": ["かくくに", "かっこく", "かこく", "かっくに"], "correct": 2, "written": "各国", "reading": "かっこく", "meaning": "each country; various countries" },
+      { "number": 7, "passage": 1, "task": "reading", "target": "出席", "choices": ["しゅっせき", "しゅつせき", "しゅっさき", "しゅつさき"], "correct": 1, "written": "出席", "reading": "しゅっせき", "meaning": "attendance; being present" },
+      { "number": 8, "passage": 1, "task": "reading", "target": "家庭", "choices": ["やてい", "かにわ", "やにわ", "かてい"], "correct": 4, "written": "家庭", "reading": "かてい", "meaning": "home; household; family" },
+      { "number": 9, "passage": 1, "task": "reading", "target": "代表", "choices": ["かいひょう", "かいびょう", "だいびょう", "だいひょう"], "correct": 4, "written": "代表", "reading": "だいひょう", "meaning": "representative; representation" },
+      { "number": 10, "passage": 1, "task": "reading", "target": "職場", "choices": ["しょくば", "しきば", "しょくじょう", "しきしょう"], "correct": 1, "written": "職場", "reading": "しょくば", "meaning": "workplace" }
+    ] },
+    { "number": 11, "passages": [
+      "試合の解説者も新人を募集しておるので、同じく応募してください。",
+      "男の子は催促するように泣いたが、母親は無視した。",
+      "登山の途中、山小屋で休憩をとった。",
+      "ほうせきは、みがけばみがくほど、かがやきをますものだ。"
+    ], "questions": [
+      { "number": 1, "passage": 0, "task": "reading", "target": "解説者", "choices": ["けいさっしゃ", "かいさつしゃ", "けいせっしゃ", "かいせつしゃ"], "correct": 4, "written": "解説者", "reading": "かいせつしゃ", "meaning": "commentator; analyst" },
+      { "number": 2, "passage": 0, "task": "reading", "target": "募集", "choices": ["ぼしゅ", "ぼしゅう", "ぼうしゅ", "ぼうしゅう"], "correct": 2, "written": "募集", "reading": "ぼしゅう", "meaning": "recruitment; inviting applications" },
+      { "number": 3, "passage": 0, "task": "reading", "target": "応募", "choices": ["おぼ", "おうぼう", "おうぼ", "おぼう"], "correct": 3, "written": "応募", "reading": "おうぼ", "meaning": "application; applying for a position" },
+      { "number": 4, "passage": 1, "task": "reading", "target": "催促", "choices": ["すいそく", "すいせき", "さいそく", "さいせき"], "correct": 3, "written": "催促", "reading": "さいそく", "meaning": "urging; pressing for something" },
+      { "number": 5, "passage": 2, "task": "reading", "target": "登山", "choices": ["とざん", "とやま", "とうざん", "のぼやま"], "correct": 1, "written": "登山", "reading": "とざん", "meaning": "mountain climbing" },
+      { "number": 6, "passage": 2, "task": "reading", "target": "途中", "choices": ["とじゅう", "とちゅう", "てちゅう", "てじゅう"], "correct": 2, "written": "途中", "reading": "とちゅう", "meaning": "on the way; midway" },
+      { "number": 7, "passage": 2, "task": "reading", "target": "休憩", "choices": ["きゅうか", "きゅうかい", "きゅうそく", "きゅうけい"], "correct": 4, "written": "休憩", "reading": "きゅうけい", "meaning": "rest; break" },
+      { "number": 8, "passage": 3, "task": "spelling", "target": "ほうせき", "choices": ["宝石", "玉石", "玉岩", "宝岩"], "correct": 1, "written": "宝石", "reading": "ほうせき", "meaning": "jewel; gemstone" },
+      { "number": 9, "passage": 3, "task": "spelling", "target": "みがけば", "choices": ["床けば", "麻けば", "磨けば", "庁けば"], "correct": 3, "written": "磨けば", "reading": "みがけば", "meaning": "if one polishes (conditional form of 磨く)" },
+      { "number": 10, "passage": 3, "task": "spelling", "target": "ます", "choices": ["曽す", "増す", "贈す", "買す"], "correct": 2, "written": "増す", "reading": "ます", "meaning": "to increase; to grow" }
+    ] }
+  ]
+}

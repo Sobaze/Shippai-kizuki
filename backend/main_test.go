@@ -19,6 +19,7 @@ func TestApplicationRoutes(t *testing.T) {
 		"/health", "/reviews", "/vocabulary-stats", "/kanji-stats", "/anki/import-status",
 		"/quiz/questions?mode=meaning&level=N2", "/quiz/questions?mode=reading&level=N2",
 		"/quiz/questions?mode=sentence&level=N2&exercise=exercise-4",
+		"/quiz/exercises?level=N2",
 		"/quiz/coverage?mode=sentence&level=N2&exercise=exercise-4",
 		"/quiz/attempts?mode=sentence", "/quiz/practice?mode=sentence",
 	} {

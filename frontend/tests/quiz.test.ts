@@ -4,6 +4,65 @@ import { n4MeaningQuestions, wordReadingQuestions, quizVocabulary, createMeaning
 import { candidatesForLevel, createCandidateQuiz, createCoverageQuiz, createExerciseQuiz, createQuiz, createMissedQuiz, describeQuizQuestions, gradeQuiz, QUIZ_LENGTH, recordQuizAnswer } from '../src/features/quiz/quiz.ts'
 import type { QuizState } from '../src/features/quiz/types.ts'
 
+test('original short sets and comprehension use their actual lengths and preserve passage feedback in retries', () => {
+  for (const [id, count] of [['original-kanji-1', 6], ['original-kanji-2', 6], ['original-reading-1', 2], ['original-reading-2', 2], ['original-reading-3', 2]] as const) {
+    const questions = createExerciseQuiz(fixturePool('sentence', 'N2', id), () => 0)
+    assert.equal(questions.length, count)
+    const before = JSON.stringify(questions)
+    let state: QuizState = { status: 'playing', questions, answers: [] }
+    questions.forEach((question, index) => {
+      state = recordQuizAnswer(state, { questionId: question.id, selectedAnswer: question.answer })
+      assert.equal(state.status, index === count - 1 ? 'results' : 'playing')
+    })
+    const retry = createMissedQuiz(gradeQuiz(questions, []), () => 0)
+    assert.equal(retry.length, count)
+    assert.equal(JSON.stringify(questions), before)
+    assert.ok(retry.every(q => q.explanation && q.exerciseId === id))
+    if (id.startsWith('original-reading')) {
+      assert.ok(retry.every(q => q.passage && q.evidence && !q.context))
+      assert.match(describeQuizQuestions(questions), /^Reading comprehension · Original Reading/)
+    } else assert.match(describeQuizQuestions(questions), /^JLPT Kanji exercise · Original Kanji/)
+  }
+})
+
+test('all supplied exercises use their full 10/12-question lengths and preserve source order through grading/retries', () => {
+  let total = 0
+  for (let number = 1; number <= 11; number++) {
+    const id = `exercise-${number}`
+    const pool = fixturePool('sentence', 'N2', id)
+    const count = number <= 6 ? 12 : 10
+    const questions = createExerciseQuiz(pool, () => 0)
+    assert.equal(questions.length, count)
+    assert.deepEqual(questions.map(q => q.id), pool.map(q => q.id))
+    assert.equal(describeQuizQuestions(questions), `JLPT Kanji exercise · Exercise ${number}`)
+    let state: QuizState = { status: 'playing', questions, answers: [] }
+    questions.forEach((question, index) => {
+      state = recordQuizAnswer(state, { questionId: question.id, selectedAnswer: question.answer })
+      assert.equal(state.status, index === count - 1 ? 'results' : 'playing')
+    })
+    const retry = createMissedQuiz(gradeQuiz(questions, []), () => 0)
+    assert.equal(retry.length, count)
+    assert.ok(retry.every(q => q.context && q.exerciseId === id && q.task))
+    total += count
+  }
+  assert.equal(total, 122)
+  const seven = fixturePool('sentence', 'N2', 'exercise-7')
+  assert.equal(new Set(seven.slice(0, 4).map(q => q.context!.before + q.prompt + q.context!.after)).size, 1)
+  const ten = fixturePool('sentence', 'N2', 'exercise-10')
+  assert.ok(ten.every(q => q.task === 'reading'))
+})
+
+test('selected-exercise queues exclude other sets while retaining an explicit all-exercise view', () => {
+  const one = fixturePool('sentence', 'N2', 'exercise-1')
+  const four = fixturePool('sentence', 'N2', 'exercise-4')
+  const ten = fixturePool('sentence', 'N2', 'exercise-10')
+  const candidates = [one[0], four[0], ten[0]].map(question => ({ question, streak: 0, lastPracticedAt: '2026-11-01T12:00:00Z' }))
+  assert.deepEqual(candidatesForLevel(candidates, 'N2', one, 'exercise-1').map(c => c.question.id), [one[0].id])
+  assert.deepEqual(candidatesForLevel(candidates, 'N2', four, 'exercise-4').map(c => c.question.id), [four[0].id])
+  assert.equal(candidatesForLevel(candidates, 'N2', one).length, 3)
+  assert.equal(candidates.length, 3)
+})
+
 test('Exercise 4 retains all twelve contextual targets, source order, answer keys, and task identities', () => {
   const pool = fixturePool('sentence', 'N2')
   const snapshot = JSON.stringify(pool)

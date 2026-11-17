@@ -1,6 +1,27 @@
-import type { QuizAttemptSubmission, QuizAttemptSummary, QuizCandidate, QuizCoverage, QuizLevel, QuizMode, QuizPool, SavedQuizAttempt } from './types'
+import type { ExerciseCategory, ExerciseSummary, QuizAttemptSubmission, QuizAttemptSummary, QuizCandidate, QuizCoverage, QuizLevel, QuizMode, QuizPool, SavedQuizAttempt } from './types'
 
 const pendingSaves = new Map<string, Promise<SavedQuizAttempt>>()
+
+export async function getQuizExercises(level: QuizLevel, signal: AbortSignal, category?: ExerciseCategory): Promise<ExerciseSummary[]> {
+  const response = await fetch(`/api/quiz/exercises?level=${level}${category ? `&category=${category}` : ''}`, { signal, cache: 'no-store' })
+  if (!response.ok) {
+    if (response.status === 404) throw new Error('The exercise list is unavailable. Restart the Go backend to load the new exercises, then retry.')
+    throw new Error((await response.text()).trim() || 'Could not load the exercise list.')
+  }
+  const result: { exercises: ExerciseSummary[] } = await response.json()
+  if (!Array.isArray(result.exercises) || new Set(result.exercises.map(exercise => exercise.id)).size !== result.exercises.length
+    || result.exercises.some(exercise => !exercise.id || !exercise.title || exercise.level !== level
+      || !Number.isInteger(exercise.questionCount) || exercise.questionCount < 1 || exercise.questionCount > 12
+      || !Number.isInteger(exercise.readingCount) || exercise.readingCount < 0
+      || !Number.isInteger(exercise.spellingCount) || exercise.spellingCount < 0
+      || !Number.isInteger(exercise.comprehensionCount ?? 0) || (exercise.comprehensionCount ?? 0) < 0
+      || (exercise.category !== undefined && exercise.category !== 'kanji' && exercise.category !== 'comprehension')
+      || (category !== undefined && (exercise.category ?? 'kanji') !== category)
+      || exercise.readingCount + exercise.spellingCount + (exercise.comprehensionCount ?? 0) !== exercise.questionCount)) {
+    throw new Error('The backend returned an incomplete or mismatched exercise list.')
+  }
+  return result.exercises
+}
 
 export async function getQuizCoverage(mode: QuizMode, level: QuizLevel, signal: AbortSignal, exerciseId?: string): Promise<QuizCoverage> {
   // A just-completed run may still be saving after its results view closes.

@@ -1,7 +1,7 @@
 .vocabulary {
   padding: clamp(1rem, 4vw, 2rem);
   border: 1px solid var(--border);
-  border-radius: 1rem;
+  border-radius: var(--radius-panel);
   background: var(--surface);
   box-shadow: var(--panel-shadow);
 }
@@ -31,17 +31,16 @@
 
 .vocabulary-header button {
   padding: 0.5rem 1rem;
-  border: 1px solid #73e5ff60;
-  border-radius: 0.5rem;
-  color: var(--cyan);
-  background: var(--cyan-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-control);
+  color: var(--accent);
+  background: var(--accent-bg);
   cursor: pointer;
 }
 
 .vocabulary-header button:hover:not(:disabled) {
-  background: #1c3d52;
-  border-color: var(--cyan);
-  box-shadow: 0 0 18px #73e5ff18;
+  background: var(--accent-hover);
+  border-color: var(--accent);
 }
 
 .vocabulary-header button:disabled {
@@ -54,7 +53,7 @@
 }
 
 .vocabulary-error {
-  color: var(--pink);
+  color: var(--negative);
 }
 
 .vocabulary-table-container {
@@ -81,7 +80,7 @@
 }
 
 .vocabulary-table th {
-  color: var(--cyan);
+  color: var(--accent);
   font-size: 0.8rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -100,7 +99,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   white-space: nowrap;
-  color: var(--pink);
+  color: var(--negative);
   font-variant-numeric: tabular-nums;
 }
 
@@ -119,12 +118,12 @@
 .practice-label {
   display: inline-block;
   padding: 0.25rem 0.6rem;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-control);
   font-size: 0.8rem;
   font-weight: 600;
   border: 1px solid currentColor;
 }
 
-.practice-suggested_practice { color: var(--pink); background: var(--pink-bg); }
-.practice-limited_evidence { color: var(--purple); background: var(--purple-bg); }
-.practice-no_extra_practice { color: var(--green); background: var(--green-bg); }
+.practice-suggested_practice { color: var(--negative); background: var(--negative-bg); }
+.practice-limited_evidence { color: var(--secondary); background: var(--secondary-bg); }
+.practice-no_extra_practice { color: var(--positive); background: var(--positive-bg); }

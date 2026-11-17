@@ -119,8 +119,13 @@ requires internet access; no API key is needed.
 
 The fixed top navigation stays visible while scrolling. **Home** holds setup,
 Anki import, and **How scoring works**. **Insights** holds Kanji/Vocabulary tabs.
-**Quiz** opens short, self-contained kanji meaning practice. On phones, the fixed
+**Quiz** holds kanji meanings, word readings, and JLPT-inspired sentence exercises. On phones, the fixed
 navigation uses two rows so all three destinations remain readable.
+
+The interface uses a lantern-alley theme: warm charcoal surroundings, vermilion
+details, Japanese display typography, and cream paper question sheets. Home has
+an original local izakaya-alley illustration. See [docs/theme.md](docs/theme.md)
+for palette roles, artwork, and readability/responsive-layout details.
 
 | URL | View |
 | --- | --- |
@@ -129,7 +134,7 @@ navigation uses two rows so all three destinations remain readable.
 | `/insights` | Redirect to Kanji insights |
 | `/insights/kanji` | Kanji cards and contributing-word evidence |
 | `/insights/vocabulary` | Vocabulary difficulty table |
-| `/quiz` | Ten-question kanji-meaning or whole-word-reading practice |
+| `/quiz` | Meaning/reading quizzes and named JLPT Kanji exercises |
 
 Both insight tabs support:
 
@@ -166,7 +171,7 @@ host must serve `index.html` for client-side routes as well.
 ### Quiz practice
 
 Open **Quiz** and choose a practice type. Regular quizzes use **Start 10-question
-quiz**; the sentence exercise uses **Start Exercise 4**.
+quiz**; sentence practice has an exercise selector and a **Start Exercise …** button.
 
 **N2 is selected by default in the meaning and reading modes** for exam-focused practice.
 
@@ -197,14 +202,22 @@ furigana, and answer feedback is withheld until the results.
 without producing a score, while keeping the selected practice type and level. A new
 attempt starts with zero answers.
 
-#### JLPT Kanji exercise — Exercise 4
+#### JLPT practice — original N2 pilot and supplied exercises
 
-Choose **JLPT Kanji exercise** to open **Exercise 4**: twelve sentence-based
-questions, six asking for a reading and six for the correct kanji spelling.
-The sentence target is highlighted and underlined. Questions retain their
-original order; choices are shuffled. Results show the total score, separate
-reading/spelling scores, and sentence/word feedback. **Restart Exercise 4** repeats
-the whole fixed set; retrying misses can include all twelve questions.
+Choose **JLPT practice**, then **Kanji exercises** or **Reading comprehension**.
+The original N2 pilot has two six-question mixed reading/spelling sets and three
+two-question comprehension sets: opinion/reasoning, contrasting viewpoints,
+and a practical course notice. Questions/options are in Japanese, with
+explanations and supporting passage quotations shown after completion. Original
+sets are grouped first; see [docs/original-n2-pilot.md](docs/original-n2-pilot.md).
+
+Under **Kanji exercises**, you can also select the supplied **Exercise 1–11**. There are **122
+questions** in total: Exercises 1–6 have 12 questions each, and 7–11 have 10.
+Reading/spelling counts vary by set; Exercise 10 is reading-only. Every question
+shows the full source passage and highlights/underlines only the requested target,
+including passages shared by several questions. Questions retain their original
+order; choices are shuffled. Results show the actual total, task-specific scores,
+and word/context feedback. **Restart Exercise …** repeats the selected fixed set.
 
 Exercise coverage, history, and mistake progress are separate from standalone
 meaning/reading practice. Saved target/task IDs keep reading and spelling
@@ -254,7 +267,8 @@ and selected level (shown on the button);
 moving to each new question and the final results heading.
 
 Question pools are stored in `backend/internal/quiz/data/questions.json`, the larger
-`backend/internal/quiz/data/n2.generated.json`, and `backend/internal/quiz/data/exercises.json`, embedded in the Go binary,
+`backend/internal/quiz/data/n2.generated.json`, `backend/internal/quiz/data/exercises.json`,
+`backend/internal/quiz/data/exercises.additional.generated.json`, and `backend/internal/quiz/data/original-n2.json`, embedded in the Go binary,
 and loaded through `GET /quiz/questions?mode=meaning&level=N5` (or `N4`, with
 `mode=reading` for word-reading pools). Go validates the checked data at startup. No live
 dictionary or Anki calls are needed to start or answer a quiz. Restart Go after
@@ -289,7 +303,7 @@ again. The retry can have 1–10 questions (1–12 for sentence exercises), with
 example, an original **7/10** remains 7/10 after a successful **3/3** retry.
 A perfect result has no missed-item retry button. Cancelled retries are not saved.
 
-Go validates full-quiz completion (ten answers, or the exercise's full twelve), valid shorter retries, consistent
+Go validates full-quiz completion (ten regular answers, or the selected exercise's registered 10/12 questions), valid shorter retries, consistent
 modes, distinct choices, and selected answers. It calculates correctness from the
 submitted snapshots instead of accepting a client-provided score. A single atomic
 INSERT stores the completed result. Repeating the same ID/content returns the
@@ -305,8 +319,9 @@ progress. Back-to-back attempts are allowed; clearing is not permanent mastery.
 The queue's practice button starts up to ten least-recently-practised questions,
 with shuffled order and choices. Queue runs use the existing focused retry
 format, retain saved question snapshots, and show their own save status. Each
-mode's queue initially focuses on **the selected level**; use **Include other
-levels and older saved items** to show the entire mode queue. Matching legacy
+regular mode's queue initially focuses on **the selected level**; sentence practice
+focuses on **the selected exercise**. Use **Include other levels/exercises and
+older saved items** to show the entire mode queue. Matching legacy
 IDs count in the selected level. Long lists expand 24 items at a time.
 New candidates show their estimated level. History remains grouped by mode.
 New meaning and reading snapshots retain their level, including through retries and saved
@@ -417,6 +432,8 @@ API routing when deployment is introduced.
 | POST | `/quiz/attempts` | Validate and save a completed quiz; `201` new, `200` identical retry |
 | GET | `/quiz/questions?mode=meaning&level=N2` | Checked pool and source/version metadata; meaning or reading, N2/N4/N5 |
 | GET | `/quiz/questions?mode=sentence&level=N2&exercise=exercise-4` | Named twelve-question contextual exercise |
+| GET | `/quiz/exercises?level=N2` | Named N2 sets with category, original/supplied grouping, and task counts |
+| GET | `/quiz/exercises?level=N2&category=comprehension` | Original reading-comprehension sets; `category=kanji` lists mixed kanji sets and supplied exercises |
 | GET | `/quiz/coverage?mode=meaning&level=N5` | Current-pool attempted/unseen totals plus each item's saved-attempt count and last-practice time |
 | GET | `/quiz/coverage?mode=sentence&level=N2&exercise=exercise-4` | Coverage of the named exercise's twelve targets |
 | GET | `/quiz/attempts?mode=meaning` | Latest 20 completed attempts, optionally filtered by meaning/reading mode |
@@ -885,10 +902,11 @@ Shippai-kizuki/
 │   │   │   ├── types.go      # Private question and result snapshots
 │   │   │   ├── store.go      # Immutable SQLite attempts and history
 │   │   │   ├── catalog.go    # Embedded pool loading and checks
+│   │   │   ├── exercises.go  # Named-exercise list and cached length metadata
 │   │   │   ├── coverage.go   # Current-pool exposure counts
 │   │   │   ├── practice.go   # Cross-attempt practice queues
 │   │   │   ├── *_test.go     # Feature tests and legacy compatibility
-│   │   │   └── data/         # questions.json, exercises.json, n2.generated.json, n2.audit.json
+│   │   │   └── data/         # Regular pools, supplied exercise passages, generated catalogs, audit evidence
 │   │   ├── anki/            # routes.go, client.go, import.go, text.go, tests
 │   │   ├── dictionary/      # routes.go, handler.go, store.go, tests
 │   │   ├── reviews/         # Review recording, history, vocabulary/kanji scoring, tests
@@ -910,6 +928,7 @@ Shippai-kizuki/
 │   │   │   │   ├── QuizHistory.tsx # Recent saved attempts for the selected mode
 │   │   │   │   ├── QuizPractice.tsx # Cross-level candidates and queue sessions
 │   │   │   │   ├── QuizCoverage.tsx # Selected pool's attempted/unseen progress
+│   │   │   │   ├── QuizExerciseSelect.tsx # Server-listed exercise titles and lengths
 │   │   │   │   ├── api.ts       # Pools, saves, history, and practice HTTP calls
 │   │   │   │   ├── useQuizPool.ts # Cancellable level-aware loading and retries
 │   │   │   │   ├── quiz.ts      # Shuffle, grading, and answer progression

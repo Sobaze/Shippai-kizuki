@@ -20,12 +20,20 @@ var n2QuizData []byte
 //go:embed data/exercises.json
 var exerciseQuizData []byte
 
+//go:embed data/exercises.additional.generated.json
+var additionalExerciseQuizData []byte
+
+//go:embed data/original-n2.json
+var originalQuizData []byte
+
 type quizPool struct {
 	Mode       string         `json:"mode"`
 	Level      string         `json:"level"`
 	Questions  []quizQuestion `json:"questions"`
 	ExerciseID string         `json:"exerciseId,omitempty"`
 	Title      string         `json:"title,omitempty"`
+	Category   string         `json:"category,omitempty"`
+	Original   bool           `json:"original,omitempty"`
 }
 
 type quizCatalog struct {
@@ -36,19 +44,6 @@ type quizCatalog struct {
 }
 
 func validQuizLevel(level string) bool { return level == "N5" || level == "N4" || level == "N2" }
-
-func exerciseLength(id string) int {
-	var catalog quizCatalog
-	if json.Unmarshal(exerciseQuizData, &catalog) != nil {
-		return 0
-	}
-	for _, pool := range catalog.Pools {
-		if pool.ExerciseID == id {
-			return len(pool.Questions)
-		}
-	}
-	return 0
-}
 
 func loadQuizCatalog(data []byte, additions ...[]byte) (quizCatalog, error) {
 	catalog := quizCatalog{Version: 1, Sources: map[string]string{}}
@@ -76,9 +71,9 @@ func loadQuizCatalog(data []byte, additions ...[]byte) (quizCatalog, error) {
 		key := pool.Mode + "/" + pool.Level + "/" + pool.ExerciseID
 		validSize := len(pool.Questions) >= 10
 		if pool.Mode == "sentence" {
-			validSize = pool.ExerciseID != "" && pool.Title != "" && pool.Level == "N2" && len(pool.Questions) >= 1 && len(pool.Questions) <= 12
+			validSize = pool.ExerciseID != "" && pool.Title != "" && pool.Level == "N2" && len(pool.Questions) >= 1 && len(pool.Questions) <= 12 && validExerciseCategory(poolCategory(*pool))
 		}
-		if seenPools[key] || !validQuizMode(pool.Mode) || !validQuizLevel(pool.Level) || !validSize || (pool.Mode != "sentence" && pool.ExerciseID != "") {
+		if seenPools[key] || !validQuizMode(pool.Mode) || !validQuizLevel(pool.Level) || !validSize || (pool.Mode != "sentence" && (pool.ExerciseID != "" || pool.Category != "")) {
 			return quizCatalog{}, fmt.Errorf("invalid, duplicate, or undersized quiz pool %q", key)
 		}
 		seenPools[key] = true
@@ -101,6 +96,9 @@ func loadQuizCatalog(data []byte, additions ...[]byte) (quizCatalog, error) {
 			question.EstimatedLevel = pool.Level
 			if pool.Mode == "sentence" && question.ExerciseID != pool.ExerciseID {
 				return quizCatalog{}, fmt.Errorf("question %q does not match its exercise", question.ID)
+			}
+			if pool.Mode == "sentence" && (question.Task == "comprehension") != (poolCategory(*pool) == "comprehension") {
+				return quizCatalog{}, fmt.Errorf("question %q does not match its exercise category", question.ID)
 			}
 			// Reuse submission validation to check choice uniqueness, answer keys,
 			// reading/word alignment, and complete example snapshots at startup.

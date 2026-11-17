@@ -8,12 +8,12 @@ export function AppNavigation() {
       <div className="app-navigation-inner">
         <Link to="/" className="app-brand" aria-label="Shippai Kizuki home">
           <span className="app-brand-mark" aria-hidden="true">気</span>
-          <span>Shippai Kizuki<small lang="ja">失敗気づき</small></span>
+          <span>Shippai Kizuki<small lang="ja">失敗から、気づきへ。</small></span>
         </Link>
         <nav className="app-navigation-links" aria-label="Main navigation">
-          <NavLink to="/" end>Home</NavLink>
-          <NavLink to="/insights">Insights</NavLink>
-          <NavLink to="/quiz">Quiz</NavLink>
+          <NavLink to="/" end><span lang="ja" aria-hidden="true">入口</span>Home</NavLink>
+          <NavLink to="/insights"><span lang="ja" aria-hidden="true">振り返り</span>Insights</NavLink>
+          <NavLink to="/quiz"><span lang="ja" aria-hidden="true">練習</span>Quiz</NavLink>
         </nav>
       </div>
     </header>

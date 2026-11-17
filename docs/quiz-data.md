@@ -3,7 +3,9 @@
 ## Current pools
 
 `backend/internal/quiz/data/questions.json` holds the original N5/N4 pools; the N2 expansion is in
-`backend/internal/quiz/data/n2.generated.json`. Contextual exercises are in `backend/internal/quiz/data/exercises.json`.
+`backend/internal/quiz/data/n2.generated.json`. Contextual exercises are in
+`backend/internal/quiz/data/exercises.json` and `exercises.additional.generated.json`.
+The original mixed/comprehension pilot is in `backend/internal/quiz/data/original-n2.json`.
 Go embeds and merges these files with `//go:embed`,
 validates the combined catalog at startup, and serves one selected pool with its source/version
 metadata through `GET /quiz/questions?mode=meaning&level=N5`.
@@ -12,7 +14,8 @@ metadata through `GET /quiz/questions?mode=meaning&level=N5`.
 | --- | --- | ---: | --- |
 | Kanji meanings | `N2` | 374 | Full N2-specific source list; see [N2 data notes](n2-practice.md) |
 | Word readings | `N2` | 1,640 | Independently classified, exact dictionary matches; see [N2 data notes](n2-practice.md) |
-| JLPT Kanji exercise | `N2`, `exercise-4` | 12 | Fixed sentence reading/spelling tasks; see [exercise notes](jlpt-kanji-exercises.md) |
+| JLPT Kanji exercise | `N2`, `exercise-1` … `exercise-11` | 122 total | Six 12-question sets and five 10-question sets; see [exercise notes](jlpt-kanji-exercises.md) |
+| Original N2 pilot | `N2`, `original-kanji-*` / `original-reading-*` | 18 total | Two mixed six-question sets and three two-question comprehension sets; see [pilot notes](original-n2-pilot.md) |
 | Kanji meanings | `N5` | 24 | 日 月 年 人 国 山 川 水 火 木 金 土 大 小 上 下 中 外 東 西 南 北 書 読 |
 | Kanji meanings | `N4` | 24 | 海 町 店 道 空 広 新 強 近 朝 社 建 会 同 自 開 明 動 体 思 家 安 売 住 |
 | Word readings | `N5` | 24 | 新しい 新聞 勉強 近い 朝ご飯 浴びる 危ない 上げる 赤い 明るい 開ける 秋 甘い 洗う 歩く 遊ぶ 暖かい 番号 便利 帽子 病院 地下鉄 地図 電車 |

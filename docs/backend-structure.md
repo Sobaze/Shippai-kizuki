@@ -50,12 +50,13 @@ they work with the database and dependencies supplied by startup.
 - `backend/data/`: your runtime SQLite database, created locally and ignored by Git.
 - `backend/internal/quiz/data/`: versioned question catalogs and audit evidence.
 
-The quiz package embeds `questions.json`, `n2.generated.json`, and `exercises.json`
+The quiz package embeds `questions.json`, `n2.generated.json`, `exercises.json`,
+`exercises.additional.generated.json`, and `original-n2.json`
 from its own `data/` directory with `//go:embed`. The audit file is for offline
 verification. Embedded catalogs are available without runtime file-path lookups
 or external network requests.
 
-`backend/scripts/` contains development-only N2 data-building/checking tools.
+`backend/scripts/` contains development-only N2 data and supplied-exercise build/check tools.
 Their paths and the frontend's test fixtures point to the quiz package's data
 directory. Rebuild/restart Go after changing embedded catalog contents.
 
@@ -73,6 +74,8 @@ From `backend/`:
 go test ./...
 go vet ./...
 node --test scripts/build-n2.test.mjs
+node --test scripts/build-exercises.test.mjs
+node --test scripts/original-n2.test.mjs
 
 # Focus on one feature.
 go test ./internal/quiz

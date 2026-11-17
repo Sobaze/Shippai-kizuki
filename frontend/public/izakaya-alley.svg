@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 720" fill="none">
+  <defs>
+    <linearGradient id="night" x1="380" y1="0" x2="380" y2="720" gradientUnits="userSpaceOnUse"><stop stop-color="#17292d"/><stop offset="1" stop-color="#101919"/></linearGradient>
+    <linearGradient id="street" x1="380" y1="310" x2="380" y2="720" gradientUnits="userSpaceOnUse"><stop stop-color="#263633"/><stop offset="1" stop-color="#354039"/></linearGradient>
+    <linearGradient id="light" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d99b52"/><stop offset=".5" stop-color="#ffe0a1"/><stop offset="1" stop-color="#b5713c"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#edac5b" stop-opacity=".32"/><stop offset="1" stop-color="#edac5b" stop-opacity="0"/></radialGradient>
+    <linearGradient id="window" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ddb475"/><stop offset="1" stop-color="#b58045"/></linearGradient>
+    <pattern id="slats" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#302f26"/><path d="M2 0v22M6 0v22" stroke="#756044" stroke-opacity=".35"/></pattern>
+    <pattern id="ribs" width="8" height="12" patternUnits="userSpaceOnUse"><path d="M0 6h8" stroke="#5b3520" stroke-opacity=".23"/></pattern>
+  </defs>
+  <path fill="url(#night)" d="M0 0h760v720H0z"/>
+  <path d="M276 0h68v349h-68zM409 41h82v340h-82z" fill="#1e302e"/>
+  <path d="M344 73h64v256h-64z" fill="#142323"/>
+  <path d="M327 328h100l237 392H112z" fill="url(#street)"/>
+  <path d="M0 47l279 91 51 430L0 720z" fill="#252b26"/>
+  <path d="M0 209l262 45 36 331L0 720z" fill="url(#slats)"/>
+  <path d="M760 0L482 118l-50 447 328 155z" fill="#1b2422"/>
+  <path d="M760 211l-252 41-38 339 290 129z" fill="#28332c"/>
+  <path d="M0 126l273 69 6 35L0 181z" fill="#141e1c"/>
+  <path d="M760 118l-268 92-4 34 272-67z" fill="#0d1818"/>
+  <path d="M19 325l165 18 15 190-180 70z" fill="url(#window)"/>
+  <path d="M48 329v263M82 333v247M118 337v229M151 341v211M19 389l170 1M19 456l175-21M19 525l180-45" stroke="#3c3528" stroke-width="8"/>
+  <path d="M573 310l187-31v271l-205-58z" fill="url(#window)"/>
+  <path d="M603 305l-13 197M643 297l-13 216M684 291l-11 236M724 285l-8 254M564 376l196 1M559 436l201 33" stroke="#3a382b" stroke-width="9"/>
+  <path d="M22 227l226 42 12 86-243-28z" fill="#8c4331"/>
+  <path d="M72 237l-1 96M124 247l4 93M177 257l10 90M229 267l13 86" stroke="#e0ba7a" stroke-opacity=".35" stroke-width="2"/>
+  <g fill="#edd8b4" font-family="'Yu Mincho', serif" font-size="29" text-anchor="middle"><text x="46" y="295">や</text><text x="99" y="303">き</text><text x="154" y="312">と</text><text x="213" y="322">り</text></g>
+  <path d="M520 220l240-62v119l-249 39z" fill="#263e40"/>
+  <path d="M560 210l-9 99M614 195l-7 104M671 181l-4 109M728 166l-2 115" stroke="#a8b2a0" stroke-opacity=".2" stroke-width="2"/>
+  <path d="M15 38c192 112 481 120 745 7M0 84c223 120 480 93 760-4M112 0l648 91" stroke="#070f10" stroke-width="3"/>
+  <path d="M0 187c223 40 461 31 760-54" stroke="#596052" stroke-opacity=".45" stroke-width="2"/>
+  <circle cx="260" cy="289" r="155" fill="url(#glow)"/>
+  <circle cx="522" cy="313" r="145" fill="url(#glow)"/>
+  <circle cx="415" cy="306" r="88" fill="url(#glow)"/>
+  <path d="M258 169v51M525 168v53M414 242v29M372 289v15" stroke="#090f0e" stroke-width="3"/>
+  <rect x="223" y="220" width="74" height="134" rx="32" fill="url(#light)"/>
+  <rect x="223" y="220" width="74" height="134" rx="32" fill="url(#ribs)"/>
+  <path d="M245 223h30M245 353h30" stroke="#493326" stroke-width="9"/>
+  <path d="M245 230c-12 31-12 85 0 116M275 230c12 31 12 85 0 116" stroke="#ffe3a0" stroke-opacity=".4" stroke-width="2"/>
+  <g fill="#593329" font-family="'Yu Mincho', serif" font-size="29" text-anchor="middle"><text x="260" y="262">居</text><text x="260" y="298">酒</text><text x="260" y="334">屋</text></g>
+  <rect x="498" y="223" width="57" height="106" rx="25" fill="#d27848"/>
+  <rect x="498" y="223" width="57" height="106" rx="25" fill="url(#ribs)"/>
+  <path d="M515 224h23M515 328h23" stroke="#463025" stroke-width="7"/>
+  <text x="526" y="291" fill="#fae1ad" font-family="'Yu Mincho', serif" font-size="37" text-anchor="middle">酒</text>
+  <rect x="398" y="273" width="33" height="63" rx="14" fill="#e2ae6c"/>
+  <rect x="398" y="273" width="33" height="63" rx="14" fill="url(#ribs)"/>
+  <path d="M408 274h14M408 335h14" stroke="#503b2a" stroke-width="5"/>
+  <rect x="363" y="306" width="20" height="39" rx="8" fill="#c37e4b"/>
+  <path d="M369 307h8M369 344h8" stroke="#3b3026" stroke-width="4"/>
+  <path d="M316 337h27v64h-27z" fill="#d1bc94"/>
+  <g fill="#503d2a" font-family="'Yu Mincho', serif" font-size="17" text-anchor="middle"><text x="330" y="357">営</text><text x="330" y="376">業</text><text x="330" y="395">中</text></g>
+  <path d="M179 546l68-24 17 120-82 28z" fill="#b7a57e"/>
+  <path d="M190 554l46-16 12 91-55 20z" fill="#3c4536"/>
+  <path d="M183 670l-8 30M262 642l17 28" stroke="#554b37" stroke-width="6"/>
+  <path d="M505 504l48 15-13 92-51-20z" fill="#aa8d60"/>
+  <path d="M511 515l32 10-9 71-35-13z" fill="#30433c"/>
+  <path d="M297 526l26-7M284 553l44-12M268 586l53-16M248 626l75-22M229 675l103-26" stroke="#dba260" stroke-opacity=".25" stroke-width="7"/>
+  <path d="M466 509l18 5M465 544l34 11M465 585l51 18M468 634l70 29M476 687l91 33" stroke="#dcae70" stroke-opacity=".17" stroke-width="6"/>
+  <path d="M338 393l-32 327M420 395l57 325M232 633l330 20M287 535l224 13M322 454l153 7" stroke="#172521" stroke-opacity=".7" stroke-width="2"/>
+  <path d="M0 670l174-76M760 670l-204-89" stroke="#0d1514" stroke-width="8"/>
+</svg>

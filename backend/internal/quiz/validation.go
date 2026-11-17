@@ -58,19 +58,26 @@ func validateQuizSubmission(input *quizSubmission) (quizResult, error) {
 		}
 		seen[question.ID] = true
 		if input.Mode == "sentence" {
-			if exerciseLength(question.ExerciseID) == 0 || question.Context == nil || strings.TrimSpace(question.Context.Before+question.Context.After) == "" || (question.Task != "reading" && question.Task != "spelling") || (input.Kind == "full" && question.ExerciseID != input.Questions[0].ExerciseID) {
-				return quizResult{}, errors.New("Sentence questions need a known exercise, reading/spelling task, and sentence context.")
+			if exerciseLength(question.ExerciseID) == 0 || (question.Task != "reading" && question.Task != "spelling" && question.Task != "comprehension") || (input.Kind == "full" && question.ExerciseID != input.Questions[0].ExerciseID) {
+				return quizResult{}, errors.New("Exercise questions need a known exercise and a supported task.")
+			}
+			if question.Task == "comprehension" {
+				if question.Context != nil || question.Passage == nil || strings.TrimSpace(question.Passage.Title) == "" || strings.TrimSpace(question.Passage.Text) == "" || strings.TrimSpace(question.Explanation) == "" || strings.TrimSpace(question.Evidence) == "" || !strings.Contains(question.Passage.Text, question.Evidence) || question.Example != (quizExample{}) {
+					return quizResult{}, errors.New("Comprehension needs a complete passage, explanation, and evidence quoted from the passage.")
+				}
+			} else if question.Context == nil || strings.TrimSpace(question.Context.Before+question.Context.After) == "" || question.Passage != nil || question.Evidence != "" {
+				return quizResult{}, errors.New("Kanji tasks need sentence context without comprehension metadata.")
 			}
 			if (question.Task == "reading" && (question.Prompt != question.Example.Written || question.Answer != question.Example.Reading)) || (question.Task == "spelling" && (question.Prompt != question.Example.Reading || question.Answer != question.Example.Written)) {
 				return quizResult{}, errors.New("Sentence targets and answers must match their word/reading snapshots.")
 			}
-		} else if question.Task != "" || question.Context != nil || question.ExerciseID != "" {
+		} else if question.Task != "" || question.Context != nil || question.ExerciseID != "" || question.Passage != nil || question.Evidence != "" {
 			return quizResult{}, errors.New("Sentence metadata belongs only to sentence exercises.")
 		}
 		if question.EstimatedLevel != "" && !validQuizLevel(question.EstimatedLevel) {
 			return quizResult{}, errors.New("Question levels must be estimated N2, N4, or N5 when provided.")
 		}
-		if strings.TrimSpace(question.Example.Written) == "" || strings.TrimSpace(question.Example.Reading) == "" || strings.TrimSpace(question.Example.Meaning) == "" {
+		if question.Task != "comprehension" && (strings.TrimSpace(question.Example.Written) == "" || strings.TrimSpace(question.Example.Reading) == "" || strings.TrimSpace(question.Example.Meaning) == "") {
 			return quizResult{}, errors.New("Each question needs a written-word, reading, and meaning snapshot.")
 		}
 		if input.Mode == "reading" && (question.Prompt != question.Example.Written || question.Answer != question.Example.Reading) {

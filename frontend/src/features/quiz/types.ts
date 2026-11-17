@@ -1,6 +1,7 @@
 export type QuizMode = 'meaning' | 'reading' | 'sentence'
 export type QuizAttemptKind = 'full' | 'retry'
 export type QuizLevel = 'N5' | 'N4' | 'N2'
+export type ExerciseCategory = 'kanji' | 'comprehension'
 
 export type VocabularyExample = {
   written: string
@@ -17,8 +18,11 @@ export type QuizQuestion = {
   example: VocabularyExample
   estimatedLevel?: QuizLevel
   exerciseId?: string
-  task?: 'reading' | 'spelling'
+  task?: 'reading' | 'spelling' | 'comprehension'
   context?: { before: string; after: string }
+  passage?: { title: string; text: string }
+  explanation?: string
+  evidence?: string
 }
 
 export type QuizPool = {
@@ -30,6 +34,20 @@ export type QuizPool = {
   sources: Record<string, string>
   exerciseId?: string
   title?: string
+  category?: ExerciseCategory
+  original?: boolean
+}
+
+export type ExerciseSummary = {
+  id: string
+  title: string
+  level: QuizLevel
+  questionCount: number
+  readingCount: number
+  spellingCount: number
+  comprehensionCount?: number
+  category?: ExerciseCategory
+  original?: boolean
 }
 
 export type QuizAnswer = {

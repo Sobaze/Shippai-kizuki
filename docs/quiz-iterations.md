@@ -209,6 +209,40 @@ reload persistence, and 320px/desktop layouts.
 Additional exercises can be supplied as separate blocks in one text document or
 paste. See [jlpt-kanji-exercises.md](jlpt-kanji-exercises.md) for the input format.
 
+### Supplied exercise bank — Exercises 1–11 complete
+
+- Add the ten additional supplied sets, keeping the original Exercise 4 IDs and
+  snapshots. The bank has 122 targets: 68 readings and 54 spellings.
+- Exercises 1–6 contain twelve questions; 7–11 contain ten. Descriptions, task
+  scores, progress, saving, and full-completion validation use the actual set size.
+- A server-listed selector orders sets numerically and displays their sizes.
+  Saved review restores the source exercise as the restart target.
+- Shared passages are stored once in `exercises.supplied.json` and expanded by
+  the offline exercise build into per-target contextual snapshots. Repeated
+  targets require an explicit occurrence selection.
+- Coverage and default practice queues focus on the selected exercise. A toggle
+  includes other sets; clearing one set does not change another set's streaks.
+- Verified all supplied keys, all 122 full-passage targets in a mobile browser,
+  ten/twelve-question attempts, reading-only scores, stale selection responses,
+  saved Exercise 4 compatibility, retries/queues, and list-load recovery.
+
+### Original N2 pilot — complete
+
+- Two original mixed kanji sets (six questions each) use target words checked
+  against the existing N2 vocabulary source.
+- Three original reading sets (two questions each) practise main point, reason,
+  writer's position/inference, and conditions in a fictional notice.
+- JLPT practice now has kanji/comprehension categories and original/supplied
+  grouping. Task-specific validation supports passages, explanations, and exact
+  supporting quotations without changing stored legacy question shapes.
+- Feedback appears after completion; saved review preserves passages and restores
+  the practice category. Coverage, retries, and independent queues cover both.
+- Verified all five sets, content keys/evidence, saving/review, feedback timing,
+  cancellation, queue clearing, legacy Exercise 4, and mobile/desktop layouts.
+
+See [original-n2-pilot.md](original-n2-pilot.md). Evaluate the small pilot's
+difficulty and reading experience before expanding it.
+
 ### Later Anki sentence generation
 
 - Inspect `JP Sentences` fields and annotations before selecting a parser.

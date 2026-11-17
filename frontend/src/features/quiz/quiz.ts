@@ -3,7 +3,7 @@ import type { QuizAnswer, QuizCandidate, QuizCoverage, QuizLevel, QuizQuestion, 
 export const QUIZ_LENGTH = 10
 
 export function exerciseTitle(id?: string): string {
-  return id ? id.replace(/^exercise-/, 'Exercise ') : 'Mixed exercises'
+  return id ? id.replace(/^exercise-/, 'Exercise ').replace(/^original-kanji-/, 'Original Kanji ').replace(/^original-reading-/, 'Original Reading ') : 'Mixed exercises'
 }
 
 function shuffled<T>(values: readonly T[], random: () => number): T[] {
@@ -26,7 +26,8 @@ export function createQuiz(pool: readonly QuizQuestion[], random: () => number =
 }
 
 export function createExerciseQuiz(pool: readonly QuizQuestion[], random: () => number = Math.random): QuizQuestion[] {
-  if (pool.length === 0 || pool.some(question => question.mode !== 'sentence' || !question.context || !question.task)) throw new Error('This exercise is incomplete.')
+  if (pool.length === 0 || pool.some(question => question.mode !== 'sentence' || !question.task
+    || (question.task === 'comprehension' ? !question.passage?.text || !question.explanation : !question.context))) throw new Error('This exercise is incomplete.')
   return pool.map(question => ({ ...question, choices: shuffled(question.choices, random) }))
 }
 
@@ -50,7 +51,8 @@ export function createCoverageQuiz(pool: readonly QuizQuestion[], coverage: Quiz
 export function describeQuizQuestions(questions: QuizQuestion[]): string {
   if (questions[0]?.mode === 'sentence') {
     const exercises = new Set(questions.map(question => question.exerciseId))
-    return `JLPT Kanji exercise · ${exerciseTitle(exercises.size === 1 ? questions[0].exerciseId : undefined)}`
+    const label = questions.every(question => question.task === 'comprehension') ? 'Reading comprehension' : questions.some(question => question.task === 'comprehension') ? 'JLPT practice' : 'JLPT Kanji exercise'
+    return `${label} · ${exerciseTitle(exercises.size === 1 ? questions[0].exerciseId : undefined)}`
   }
   const label = questions[0]?.mode === 'reading' ? 'word readings' : 'meanings'
   if (questions.length === 0 || questions.some((question) => !question.estimatedLevel)) return label === 'word readings' ? 'Word readings' : 'Kanji meanings'
@@ -76,9 +78,10 @@ export function createCandidateQuiz(candidates: QuizCandidate[], random: () => n
   }))
 }
 
-export function candidatesForLevel(candidates: QuizCandidate[], level: QuizLevel, poolQuestions: QuizQuestion[]): QuizCandidate[] {
+export function candidatesForLevel(candidates: QuizCandidate[], level: QuizLevel, poolQuestions: QuizQuestion[], exerciseId?: string): QuizCandidate[] {
   const currentIds = new Set(poolQuestions.map((question) => question.id))
-  return candidates.filter(({ question }) => question.estimatedLevel === level || currentIds.has(question.id))
+  return candidates.filter(({ question }) => (question.estimatedLevel === level || currentIds.has(question.id))
+    && (!exerciseId || question.exerciseId === exerciseId || currentIds.has(question.id)))
 }
 
 export function gradeQuiz(questions: QuizQuestion[], answers: QuizAnswer[]): QuizResult {

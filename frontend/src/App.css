@@ -18,24 +18,22 @@
   bottom: 0;
   left: 0;
   width: min(100%, 24rem);
-  height: 2px;
-  background: linear-gradient(90deg, var(--cyan), var(--pink), transparent);
-  box-shadow: 0 0 16px #73e5ff30;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-border), transparent);
 }
 
 .eyebrow {
-  color: var(--cyan);
+  color: var(--accent);
   font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
 }
 
 h1 {
   margin: 0.5rem 0;
   font-size: clamp(2.25rem, 6vw, 3.75rem);
   line-height: 1.2;
-  letter-spacing: -0.04em;
-  text-shadow: 0 0 32px #73e5ff25;
+  letter-spacing: -0.025em;
 }
 
 .app-header > p:not(.eyebrow) {
@@ -50,5 +48,5 @@ h1 {
   margin-bottom: 1rem;
   cursor: pointer;
   font-weight: 600;
-  color: var(--purple);
+  color: var(--secondary);
 }

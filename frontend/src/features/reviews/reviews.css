@@ -1,7 +1,7 @@
 .reviews {
   padding: clamp(1rem, 4vw, 2rem);
   border: 1px solid var(--border);
-  border-radius: 1rem;
+  border-radius: var(--radius-panel);
   background: var(--surface);
   box-shadow: var(--panel-shadow);
 }
@@ -31,17 +31,16 @@
 
 .reviews-header button {
   padding: 0.5rem 1rem;
-  border: 1px solid #73e5ff60;
-  border-radius: 0.5rem;
-  color: var(--cyan);
-  background: var(--cyan-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-control);
+  color: var(--accent);
+  background: var(--accent-bg);
   cursor: pointer;
 }
 
 .reviews-header button:hover:not(:disabled) {
-  background: #1c3d52;
-  border-color: var(--cyan);
-  box-shadow: 0 0 18px #73e5ff18;
+  background: var(--accent-hover);
+  border-color: var(--accent);
 }
 
 .reviews-header button:disabled {
@@ -54,7 +53,7 @@
 }
 
 .reviews-error {
-  color: var(--pink);
+  color: var(--negative);
 }
 
 .reviews-table-container {
@@ -81,7 +80,7 @@
 }
 
 .reviews-table th {
-  color: var(--cyan);
+  color: var(--accent);
   font-size: 0.8rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -99,14 +98,14 @@
   display: inline-block;
   min-width: 4.5rem;
   padding: 0.2rem 0.75rem;
-  border-radius: 2rem;
+  border-radius: var(--radius-control);
   text-align: center;
   font-size: 0.85rem;
   font-weight: 600;
   border: 1px solid currentColor;
 }
 
-.rating-again { color: var(--pink); background: var(--pink-bg); }
-.rating-hard { color: var(--amber); background: var(--amber-bg); }
-.rating-good { color: var(--green); background: var(--green-bg); }
-.rating-easy { color: var(--cyan); background: var(--cyan-bg); }
+.rating-again { color: var(--negative); background: var(--negative-bg); }
+.rating-hard { color: var(--warning); background: var(--warning-bg); }
+.rating-good { color: var(--positive); background: var(--positive-bg); }
+.rating-easy { color: var(--accent); background: var(--accent-bg); }
